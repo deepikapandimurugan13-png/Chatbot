@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniMitra AI | University Student Support Portal</title>
+  <meta name="description" content="UniMitra AI is a bilingual university student support portal with AI chatbot and voice input.">
+  <style>
+    :root {
+      --navy: #0d2b52;
+      --navy-soft: #19467f;
+      --navy-deep: #081f3c;
+      --gold: #c8962d;
+      --gold-soft: #f4e4bb;
+      --green: #2fb76f;
+      --page: #f4f8fd;
+      --panel: #ffffff;
+      --ink: #1d2735;
+      --muted: #66768b;
+      --line: #dbe4f1;
+      --shadow-lg: 0 24px 60px rgba(8, 29, 58, 0.14);
+      --shadow-md: 0 16px 36px rgba(9, 35, 72, 0.1);
+      --radius-xl: 30px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --transition: 0.28s ease;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f7fbff 0%, var(--page) 100%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    img, svg { display: block; }
+
+    .page-width {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .utility-bar { background: var(--navy-deep); color: #e7effd; font-size: 14px; }
+    .utility-bar .page-width {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 10px 0;
+    }
+    .utility-links, .utility-highlights { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+    .utility-links a { font-weight: 600; }
+    .utility-highlights span { opacity: 0.92; }
+
+    .notice-strip {
+      background: linear-gradient(90deg, #102f59, #1f548f);
+      color: #fff;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .notice-strip .page-width { display: flex; gap: 18px; align-items: center; padding: 11px 0; }
+    .notice-label {
+      display: inline-flex; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,0.12); font-weight: 700; flex-shrink: 0;
+    }
+    .notice-track { overflow: hidden; position: relative; flex: 1; }
+    .notice-items { display: inline-flex; gap: 36px; white-space: nowrap; min-width: max-content; animation: ticker 24s linear infinite; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    .site-header {
+      position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(219,228,241,0.9);
+    }
+    .header-main {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding: 16px 0;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-mark {
+      width: 60px; height: 60px; border-radius: 20px; background: linear-gradient(135deg, var(--navy), var(--navy-soft)); color: #fff; display: grid; place-items: center; font-size: 26px; font-weight: 800; box-shadow: var(--shadow-md);
+    }
+    .brand-title { margin: 0; color: var(--navy); font-size: 24px; font-weight: 800; }
+    .brand-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    .header-tools { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
+    .main-nav { display: flex; gap: 16px; flex-wrap: wrap; color: var(--navy); font-weight: 600; }
+    .main-nav a { position: relative; padding-bottom: 3px; }
+    .main-nav a::after {
+      content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 2px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform var(--transition);
+    }
+    .main-nav a:hover::after, .main-nav a:focus-visible::after { transform: scaleX(1); }
+    .lang-switch { display: inline-flex; gap: 6px; padding: 4px; border-radius: 999px; background: #edf4fb; border: 1px solid #cfdbec; }
+    .lang-btn {
+      border: 0; background: transparent; color: var(--navy); padding: 10px 16px; border-radius: 999px; font-weight: 700; transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+    }
+    .lang-btn.active { background: var(--navy); color: #fff; box-shadow: 0 12px 24px rgba(13,43,82,0.2); }
+
+    .hero {
+      padding: 36px 0 40px;
+      background: radial-gradient(circle at top right, rgba(200,150,45,0.16), transparent 26%), linear-gradient(180deg, #f7fbff 0%, #eef4fb 100%);
+    }
+    .hero-layout { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: stretch; }
+    .hero-panel, .hero-accreditation { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); }
+    .hero-panel {
+      padding: 34px; background: radial-gradient(circle at top right, rgba(200,150,45,0.12), transparent 28%), linear-gradient(135deg, rgba(13,43,82,0.98), rgba(25,70,127,0.92)); color: #fff; position: relative; overflow: hidden;
+    }
+    .hero-panel::after {
+      content: ""; position: absolute; right: -70px; bottom: -70px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.06);
+    }
+    .eyebrow { margin: 0 0 14px; text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 800; color: #d4e5ff; }
+    .hero-title { margin: 0; font-size: clamp(36px, 6vw, 58px); line-height: 1.08; max-width: 700px; }
+    .hero-text { margin: 18px 0 0; font-size: 18px; line-height: 1.8; color: #e3ecfb; max-width: 720px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+    .btn { border: 0; border-radius: 999px; padding: 14px 24px; font-weight: 700; transition: transform var(--transition), box-shadow var(--transition), background var(--transition); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--gold); color: #1f2430; box-shadow: 0 16px 28px rgba(200,150,45,0.22); }
+    .btn-secondary { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.24); }
+    .hero-badges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+    .badge-card { padding: 14px; border-radius: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); text-align: center; }
+    .badge-card strong { display: block; font-size: 15px; }
+    .badge-card span { display: block; font-size: 13px; color: #dce8fb; margin-top: 4px; line-height: 1.5; }
+    .hero-accreditation { padding: 28px; display: grid; gap: 18px; align-content: start; }
+    .hero-accreditation h2 { margin: 0; color: var(--navy); font-size: 28px; line-height: 1.2; }
+    .hero-accreditation p { margin: 0; color: var(--muted); line-height: 1.8; }
+    .stat-grid { display: grid; gap: 14px; }
+    .stat-box { border-radius: 20px; background: linear-gradient(180deg, #f7fbff 0%, #eef4fb 100%); padding: 18px; border: 1px solid var(--line); }
+    .stat-box strong { display: block; color: var(--navy); font-size: 16px; margin-bottom: 6px; }
+    .stat-box span { color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+    .section { padding: 42px 0 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 18px; flex-wrap: wrap; margin-bottom: 24px; }
+    .section-head p { margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 800; color: var(--navy); }
+    .section-head h2 { margin: 0; font-size: clamp(30px, 4vw, 44px); line-height: 1.12; color: var(--navy); max-width: 720px; }
+    .section-note { max-width: 420px; color: var(--muted); line-height: 1.8; }
+
+    .program-grid, .insight-grid, .service-grid, .campus-grid, .announcement-grid { display: grid; gap: 20px; }
+    .program-grid, .service-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .campus-grid, .insight-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .announcement-grid { grid-template-columns: 1.2fr 1fr 1fr 1fr; }
+    .course-tables {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .table-card h3 {
+      margin-bottom: 16px;
+    }
+    .course-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+    }
+    .course-table th,
+    .course-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .course-table th {
+      background: #edf4fb;
+      color: var(--navy);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+    }
+    .course-table tr:last-child td {
+      border-bottom: 0;
+    }
+    .card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 24px; transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 22px 44px rgba(10,33,66,0.12); }
+    .program-icon, .service-icon {
+      width: 56px; height: 56px; border-radius: 20px; display: grid; place-items: center; font-weight: 800; color: var(--navy); background: linear-gradient(135deg, #edf4ff, #fef4de); margin-bottom: 18px;
+    }
+    .card h3 { margin: 0 0 10px; color: var(--navy); font-size: 24px; line-height: 1.2; }
+    .card p, .card li { margin: 0; color: var(--muted); line-height: 1.8; }
+
+    .featured-announcement {
+      background: linear-gradient(145deg, rgba(13,43,82,0.98), rgba(25,70,127,0.92)); color: #fff; position: relative; overflow: hidden;
+    }
+    .featured-announcement::after {
+      content: ""; position: absolute; right: -50px; bottom: -50px; width: 170px; height: 170px; border-radius: 50%; background: rgba(255,255,255,0.06);
+    }
+    .tag { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,0.12); color: #f4e2b4; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; margin-bottom: 14px; }
+    .featured-announcement h3, .featured-announcement p, .featured-announcement li { color: #fff; }
+    .featured-announcement ul { margin: 16px 0 0; padding-left: 18px; display: grid; gap: 10px; }
+    .meta { display: inline-flex; align-items: center; color: var(--gold); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+
+    .cta { padding: 48px 0 88px; }
+    .cta-panel {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%); color: #fff; border-radius: 34px; padding: 36px; box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap;
+    }
+    .cta-panel p { margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 800; color: #d4e5ff; }
+    .cta-panel h2 { margin: 0; font-size: clamp(30px, 4vw, 42px); line-height: 1.2; max-width: 760px; }
+
+    .footer { background: #071a34; color: #cfdbef; text-align: center; padding: 24px 0 30px; font-size: 14px; }
+
+    .floating-stack { position: fixed; right: 22px; bottom: 22px; z-index: 50; display: grid; gap: 14px; justify-items: end; }
+    .voice-popup {
+      width: min(320px, calc(100vw - 24px)); background: #fff; border: 1px solid #d8e2f0; border-radius: 24px; box-shadow: 0 28px 56px rgba(8,31,61,0.18); padding: 20px; transform: translateY(18px) scale(0.94); opacity: 0; pointer-events: none; transition: opacity var(--transition), transform var(--transition);
+    }
+    .voice-popup.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .voice-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .voice-title { margin: 0; font-size: 18px; color: var(--navy); }
+    .voice-close, .chat-close {
+      border: 0; width: 34px; height: 34px; border-radius: 50%; background: #edf4ff; color: var(--navy); font-size: 18px;
+    }
+    .voice-status { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--green); position: relative; flex-shrink: 0; }
+    @keyframes pulse { 0% { transform: scale(0.75); opacity: 0.9; } 70% { transform: scale(1.5); opacity: 0; } 100% { opacity: 0; } }
+    .voice-action {
+      margin-top: 14px; border: 0; border-radius: 16px; background: linear-gradient(135deg, var(--navy), var(--navy-soft)); color: #fff; width: 100%; padding: 13px 16px; display: inline-flex; justify-content: center; align-items: center; gap: 10px; font-weight: 700;
+    }
+    .voice-fab {
+      width: 64px; height: 64px; border-radius: 50%; border: 0; box-shadow: 0 20px 38px rgba(12,34,64,0.2); display: grid; place-items: center; transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .voice-fab:hover { transform: translateY(-2px); }
+    .voice-fab { background: linear-gradient(135deg, var(--navy), var(--navy-soft)); color: #fff; position: relative; overflow: hidden; }
+    .chat-widget { position: relative; }
+    .chat-popup {
+      position: absolute; right: 0; bottom: 78px; width: min(390px, calc(100vw - 24px)); background: #fff; border-radius: 28px; overflow: hidden; border: 1px solid #d9e2ef; box-shadow: 0 30px 60px rgba(8,31,61,0.2); transform: translateY(18px) scale(0.95); opacity: 0; pointer-events: none; transition: opacity var(--transition), transform var(--transition);
+    }
+    .chat-widget.open .chat-popup { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .chat-head {
+      background: linear-gradient(135deg, var(--navy), var(--navy-soft)); color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; gap: 12px; align-items: start;
+    }
+    .chat-head-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .assistant-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.18);
+      font-size: 18px;
+    }
+    .chat-head strong { display: block; font-size: 18px; margin-bottom: 4px; }
+    .chat-head span { color: #d5e4ff; font-size: 13px; }
+    .chat-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chat-head-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      font-size: 14px;
+    }
+    .chat-feed {
+      padding: 18px; min-height: 290px; max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: linear-gradient(180deg, #fbfdff 0%, #f6f9fd 100%);
+    }
+    .chat-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-content: flex-start;
+      margin-bottom: 8px;
+    }
+    .suggestion-chip {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      background: linear-gradient(135deg, #5f44ea, #8d46f4);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 12px 24px rgba(95, 68, 234, 0.18);
+    }
+    .bubble-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 86%;
+    }
+    .bubble-wrap.bot { align-self: flex-start; }
+    .bubble-wrap.user { align-self: flex-end; }
+    .bubble { border-radius: 18px; padding: 12px 14px; font-size: 14px; line-height: 1.7; }
+    .bubble.bot { background: #fff; border: 1px solid #dfe8f4; border-bottom-left-radius: 6px; }
+    .bubble.user { background: var(--navy); color: #fff; border-bottom-right-radius: 6px; }
+    .bubble-reactions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .reaction-btn {
+      border: 1px solid #d7e3f2;
+      background: #fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      line-height: 1;
+      font-size: 14px;
+      transition: transform var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .reaction-btn:hover {
+      transform: translateY(-1px);
+      border-color: #9cb7da;
+    }
+    .reaction-btn.active {
+      background: #edf4ff;
+      border-color: #6f95c7;
+    }
+    .chat-controls { padding: 14px 16px 16px; border-top: 1px solid #e3ebf5; background: #fff; }
+    .chat-voice-status {
+      margin-bottom: 10px;
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .chat-input-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; }
+    .chat-controls input {
+      width: 100%; border-radius: 16px; border: 1px solid #ced9e9; background: #fff; padding: 13px 14px; outline: none;
+    }
+    .chat-controls input:focus { border-color: #6f95c7; box-shadow: 0 0 0 4px rgba(13,43,82,0.08); }
+    .send-btn { border: 0; border-radius: 14px; padding: 11px 16px; font-weight: 700; background: var(--gold); color: #1f2430; }
+    .voice-inline-btn {
+      border: 0;
+      border-radius: 14px;
+      width: 48px;
+      display: grid;
+      place-items: center;
+      background: #edf4ff;
+      color: var(--navy);
+      transition: transform var(--transition), background var(--transition);
+    }
+    .voice-inline-btn:hover { transform: translateY(-1px); }
+    .voice-inline-btn.listening { background: #d8f5e4; }
+
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 14px;
+      min-height: 38px;
+    }
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--muted);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: typing-bounce 1.4s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes typing-bounce {
+      0%, 80%, 100% { transform: scale(0.6); }
+      40% { transform: scale(1.1); opacity: 1; }
+    }
+
+    @media (max-width: 1100px) {
+      .hero-layout, .announcement-grid, .course-tables { grid-template-columns: 1fr; }
+      .campus-grid, .insight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 920px) {
+      .program-grid, .service-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .page-width { width: min(100% - 20px, 1180px); }
+      .campus-grid, .insight-grid, .hero-badges { grid-template-columns: 1fr; }
+      .floating-stack { right: 10px; bottom: 10px; }
+      .voice-fab { width: 58px; height: 58px; }
+      .chat-input-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="utility-bar">
+    <div class="page-width">
+      <div class="utility-links">
+        <a href="#" id="studentLogin">Student Login</a>
+        <a href="#" id="facultyLogin">Faculty Login</a>
+        <a href="#programmes" id="admissionLink">Admissions Open 2026</a>
+      </div>
+      <div class="utility-highlights">
+        <span id="utilityHighlight1">AI-powered bilingual student support portal</span>
+        <span id="utilityHighlight2">Voice and chatbot access available 24/7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice-strip">
+    <div class="page-width">
+      <div class="notice-label" id="noticeLabel">Campus Updates</div>
+      <div class="notice-track">
+        <div class="notice-items" id="noticeItems">
+          <span id="notice1">Admission guidance for 2026 batch is now open.</span>
+          <span id="notice2">Semester hall ticket support is live through UniMitra AI.</span>
+          <span id="notice3">Second installment fee deadline reminders are active.</span>
+          <span id="notice4">Department timetable revisions have been published.</span>
+          <span id="notice5">Admission guidance for 2026 batch is now open.</span>
+          <span id="notice6">Semester hall ticket support is live through UniMitra AI.</span>
+          <span id="notice7">Second installment fee deadline reminders are active.</span>
+          <span id="notice8">Department timetable revisions have been published.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="page-width header-main">
+      <div class="brand">
+        <div class="brand-mark">U</div>
+        <div>
+          <p class="brand-title" id="brandTitle">UniMitra AI</p>
+          <p class="brand-subtitle" id="brandSubtitle">University Student Support Portal</p>
+        </div>
+      </div>
+
+      <div class="header-tools">
+        <nav class="main-nav">
+          <a href="#programmes" id="navProgrammes">Programmes</a>
+          <a href="#services" id="navServices">Student Services</a>
+          <a href="#announcements" id="navAnnouncements">News & Events</a>
+          <a href="#campus" id="navCampus">Campus Life</a>
+        </nav>
+        <div class="lang-switch">
+          <button class="lang-btn active" id="langEnglish" type="button">English</button>
+          <button class="lang-btn" id="langTamil" type="button">தமிழ்</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="page-width hero-layout">
+        <div class="hero-panel">
+          <p class="eyebrow" id="heroEyebrow">Modern Institutional Experience</p>
+          <h1 class="hero-title" id="heroTitle">AI-enabled student support in a university portal format</h1>
+          <p class="hero-text" id="heroText">UniMitra AI combines the look of a formal college website with smart assistance for courses, examinations, fees, timetables, reminders, voice queries and bilingual student support.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="heroPrimary" type="button">Open Chatbot</button>
+            <a class="btn btn-secondary" href="#programmes" id="heroSecondary">Explore Programmes</a>
+          </div>
+          <div class="hero-badges">
+            <div class="badge-card"><strong id="badge1Title">24/7</strong><span id="badge1Text">AI Help Desk</span></div>
+            <div class="badge-card"><strong id="badge2Title">2</strong><span id="badge2Text">Languages</span></div>
+            <div class="badge-card"><strong id="badge3Title">Voice</strong><span id="badge3Text">Mic Input</span></div>
+          </div>
+        </div>
+
+        <aside class="hero-accreditation">
+          <h2 id="heroSideTitle">Student support at a glance</h2>
+          <p id="heroSideText">From first-year admissions to semester reminders, the portal helps students navigate academics and campus administration smoothly.</p>
+          <div class="stat-grid">
+            <div class="stat-box"><strong id="stat1Title">Courses & Admission</strong><span id="stat1Text">View available programmes, department information and admissions help for new applicants.</span></div>
+            <div class="stat-box"><strong id="stat2Title">Exams & Hall Tickets</strong><span id="stat2Text">Ask about exam schedules, hall ticket release dates and internal assessment updates.</span></div>
+            <div class="stat-box"><strong id="stat3Title">Fees & Timetable</strong><span id="stat3Text">Students can check payment windows, due dates, class timing support and assignment reminders.</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="programmes">
+      <div class="page-width">
+        <div class="section-head">
+          <div>
+            <p id="programEyebrow">Programs We Offer</p>
+            <h2 id="programTitle">COURSES DETAILS</h2>
+          </div>
+          <div class="section-note" id="programNote">Students can ask the chatbot for course details, department guidance and eligibility support at any time.</div>
+        </div>
+        <div class="course-tables">
+          <article class="card table-card">
+            <div class="program-icon">UG</div>
+            <h3 id="program1Title">Undergraduate Courses</h3>
+            <table class="course-table">
+              <thead>
+                <tr>
+                  <th id="ugTableHead1">S.No</th>
+                  <th id="ugTableHead2">Course</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td id="ugCourse1">B.A Tamil</td></tr>
+                <tr><td>2</td><td id="ugCourse2">B.A English</td></tr>
+                <tr><td>3</td><td id="ugCourse3">B.Sc Computer Science</td></tr>
+                <tr><td>4</td><td id="ugCourse4">B.Sc Chemistry</td></tr>
+                <tr><td>5</td><td id="ugCourse5">B.Sc Mathematics</td></tr>
+                <tr><td>6</td><td id="ugCourse6">B.Sc Physics</td></tr>
+                <tr><td>7</td><td id="ugCourse7">B.C.A</td></tr>
+                <tr><td>8</td><td id="ugCourse8">B.Com</td></tr>
+                <tr><td>9</td><td id="ugCourse9">B.B.A</td></tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="card table-card">
+            <div class="program-icon">PG</div>
+            <h3 id="program2Title">Postgraduate Courses</h3>
+            <table class="course-table">
+              <thead>
+                <tr>
+                  <th id="pgTableHead1">S.No</th>
+                  <th id="pgTableHead2">Course</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td id="pgCourse1">M.A Tamil</td></tr>
+                <tr><td>2</td><td id="pgCourse2">M.A English</td></tr>
+                <tr><td>3</td><td id="pgCourse3">M.Sc Computer Science</td></tr>
+                <tr><td>4</td><td id="pgCourse4">M.Sc Chemistry</td></tr>
+                <tr><td>5</td><td id="pgCourse5">M.Sc Mathematics</td></tr>
+                <tr><td>6</td><td id="pgCourse6">M.Sc Physics</td></tr>
+                <tr><td>7</td><td id="pgCourse7">M.C.A</td></tr>
+                <tr><td>8</td><td id="pgCourse8">M.Com</td></tr>
+                <tr><td>9</td><td id="pgCourse9">M.B.A</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="page-width">
+        <div class="section-head">
+          <div>
+            <p id="servicesEyebrow">Student Services</p>
+            <h2 id="servicesTitle">Core help areas covered by the AI assistant</h2>
+          </div>
+          <div class="section-note" id="servicesNote">The portal keeps the presentation formal, but the student support flow is fast, conversational and easy to use.</div>
+        </div>
+        <div class="service-grid">
+          <article class="card service-card"><div class="service-icon">02</div><h3 id="service2Title">Exam Guidance</h3><p id="service2Text">Students can ask about exam dates, internal schedules, hall tickets and semester preparation timelines.</p></article>
+          <article class="card service-card"><div class="service-icon">03</div><h3 id="service3Title">Fee Assistance</h3><p id="service3Text">Get support on fee structure, installment windows, payment dates and upcoming due reminders.</p></article>
+          <article class="card service-card"><div class="service-icon">04</div><h3 id="service4Title">Timetable Support</h3><p id="service4Text">The chatbot helps with daily class timings, revised schedules, department-specific hours and lab sessions.</p></article>
+          <article class="card service-card"><div class="service-icon">05</div><h3 id="service5Title">Assignment Alerts</h3><p id="service5Text">Students can ask for reminders on record submissions, seminar deadlines and practical reviews.</p></article>
+          <article class="card service-card"><div class="service-icon">06</div><h3 id="service6Title">Voice & Chat Access</h3><p id="service6Text">The floating mic and chatbot stay available on every screen so help is always one tap away.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="announcements">
+      <div class="page-width">
+        <div class="section-head">
+          <div>
+            <p id="announceEyebrow">News & Events</p>
+            <h2 id="announceTitle">Important updates presented in a college-website format</h2>
+          </div>
+          <div class="section-note" id="announceNote">The announcements area mirrors a formal institutional layout while the chatbot explains each update in student-friendly language.</div>
+        </div>
+        <div class="announcement-grid">
+          <article class="card featured-announcement">
+            <div class="tag" id="featuredTag">Featured Update</div>
+            <h3 id="featuredTitle">Semester examination registration closes on 25 June</h3>
+            <p id="featuredText">Students must review selected papers, submit required records and confirm exam registration before the deadline.</p>
+            <ul>
+              <li id="featuredPoint1">Hall ticket release starts one week before the first exam.</li>
+              <li id="featuredPoint2">Fee clearance is required before final hall ticket generation.</li>
+              <li id="featuredPoint3">UniMitra AI can answer schedule and hall ticket questions instantly.</li>
+            </ul>
+          </article>
+          <article class="card announcement-card"><div class="meta" id="meta1">Admissions Desk</div><h3 id="announce1Title">UG admissions counselling this Friday</h3><p id="announce1Text">The admissions support team will guide students on eligibility, required documents and application flow.</p></article>
+          <article class="card announcement-card"><div class="meta" id="meta2">Finance Office</div><h3 id="announce2Title">Second installment fee window opens Monday</h3><p id="announce2Text">Students can use the portal to understand due dates, late fee policy and payment reminders.</p></article>
+          <article class="card announcement-card"><div class="meta" id="meta3">Academic Section</div><h3 id="announce3Title">Department timetable revision published</h3><p id="announce3Text">Revised class hours for science labs and language electives are now active for the new week.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="campus">
+      <div class="page-width">
+        <div class="section-head">
+          <div>
+            <p id="campusEyebrow">Campus Life</p>
+            <h2 id="campusTitle">A portal that feels institutional but supports students conversationally</h2>
+          </div>
+          <div class="section-note" id="campusNote">This section adds the broader campus-site feel seen in modern college websites, while AI support remains at the center.</div>
+        </div>
+        <div class="campus-grid">
+          <article class="card campus-card"><h3 id="campus1Title">Department Offices</h3><p id="campus1Text">Find which office handles course changes, academic records, certificates and semester coordination.</p></article>
+          <article class="card campus-card"><h3 id="campus2Title">Library & Labs</h3><p id="campus2Text">Check lab hours, library access, digital resources, record submission desks and research spaces.</p></article>
+          <article class="card campus-card"><h3 id="campus3Title">Student Welfare</h3><p id="campus3Text">The portal can guide students toward scholarship support, mentoring, grievance help and activity notices.</p></article>
+          <article class="card campus-card"><h3 id="campus4Title">Transport & Access</h3><p id="campus4Text">Get support on bus routes, campus access timings, visitor guidance and event-day movement plans.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="page-width">
+        <div class="section-head">
+          <div>
+            <p id="insightEyebrow">Why Students Use It</p>
+            <h2 id="insightTitle">A support experience that fits admissions, semester life and exam season</h2>
+          </div>
+          <div class="section-note" id="insightNote">These quick highlights give the page the fuller multi-block institutional rhythm seen on college homepages.</div>
+        </div>
+        <div class="insight-grid">
+          <article class="card insight-card"><h3 id="insight1Title">Fast Answers</h3><p id="insight1Text">The AI chatbot responds immediately to common academic and administrative questions.</p></article>
+          <article class="card insight-card"><h3 id="insight2Title">Tamil + English</h3><p id="insight2Text">Students can switch the full website language and still get meaningful chatbot support.</p></article>
+          <article class="card insight-card"><h3 id="insight4Title">Campus Ready</h3><p id="insight4Text">The visual structure feels formal and credible, matching a real college information portal.</p></article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="page-width" id="footerText">UniMitra AI Student Support Portal | Institutional layout with smart bilingual support</div>
+  </footer>
+
+  <div class="floating-stack">
+    <button class="voice-fab" id="voiceFab" type="button" aria-label="Open chatbot">
+      <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 7.5C4 5.57 5.57 4 7.5 4H16.5C18.43 4 20 5.57 20 7.5V12.5C20 14.43 18.43 16 16.5 16H10.5L6 19.5V16C4.9 15.76 4 14.78 4 13.6V7.5Z" fill="white"/>
+        <circle cx="9" cy="10" r="1.2" fill="#0d2b52"/>
+        <circle cx="12" cy="10" r="1.2" fill="#0d2b52"/>
+        <circle cx="15" cy="10" r="1.2" fill="#0d2b52"/>
+      </svg>
+    </button>
+
+    <div class="chat-widget" id="chatbot">
+      <div class="chat-popup" id="chatPopup">
+        <div class="chat-head">
+          <div class="chat-head-main">
+            <div class="assistant-badge">AI</div>
+            <div>
+              <strong id="chatTitle">UniMitra AI Assistant</strong>
+              <span id="chatStatus">Online now | Text support</span>
+            </div>
+          </div>
+          <div class="chat-head-actions" style="display: flex; gap: 8px;">
+            <button class="chat-head-icon" id="chatSettingsToggle" type="button" aria-label="Chat Settings" title="Configure API Key" style="border: 0; background: rgba(255,255,255,0.14); color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; display: grid; place-items: center;">⚙️</button>
+            <button class="chat-head-icon" id="chatClose" type="button" aria-label="Close chatbot">✕</button>
+          </div>
+        </div>
+        <div class="chat-settings-panel" id="chatSettingsPanel" style="display: none; padding: 14px; border-bottom: 1px solid #e3ebf5; background: #f7fbff; font-size: 13px;">
+          <div style="font-weight: 700; margin-bottom: 6px; color: var(--navy);">OpenAI API Settings</div>
+          <p style="margin: 0 0 8px; color: var(--muted); font-size: 11px;">Configure your OpenAI API Key for direct browser completions. Key is stored locally in your browser.</p>
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px;">
+            <input type="password" id="openaiApiKeyInput" placeholder="sk-proj-..." style="padding: 6px 10px; font-size: 12px; border: 1px solid #ced9e9; border-radius: 8px; width: 100%;">
+            <button class="btn" id="saveApiKeyBtn" type="button" style="background: var(--navy); color: #fff; font-size: 11px; padding: 6px 12px; border-radius: 8px; border: 0; font-weight: bold; cursor: pointer;">Save</button>
+          </div>
+          <div id="settingsKeyStatus" style="font-size: 11px; margin-top: 6px; color: var(--green); display: none;">Key saved successfully!</div>
+        </div>
+        <div class="chat-feed" id="chatFeed">
+          <div class="chat-suggestions" id="chatSuggestions">
+            <button class="suggestion-chip" type="button" data-question="What UG and PG courses are available?" id="chip1">UG & PG Courses</button>
+            <button class="suggestion-chip" type="button" data-question="When are hall tickets released?" id="chip2">Hall Tickets</button>
+            <button class="suggestion-chip" type="button" data-question="What is the fee payment deadline?" id="chip3">Fee Deadline</button>
+            <button class="suggestion-chip" type="button" data-question="Show today's timetable." id="chip4">Timetable</button>
+            <button class="suggestion-chip" type="button" data-question="Any assignment reminders for this week?" id="chip5">Reminders</button>
+            <button class="suggestion-chip" type="button" data-question="Can I ask in Tamil or Tanglish?" id="chip6">Tamil Support</button>
+          </div>
+        </div>
+        <form class="chat-controls" id="chatForm">
+          <div class="chat-voice-status" id="voiceStatusText"></div>
+          <div class="chat-input-row">
+            <input id="chatInput" type="text" placeholder="Ask about courses, exams, fees, timetable or reminders">
+            <button class="voice-inline-btn" id="voiceStart" type="button" aria-label="Start voice input">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3C9.79 3 8 4.79 8 7V12C8 14.21 9.79 16 12 16C14.21 16 16 14.21 16 12V7C16 4.79 14.21 3 12 3Z" fill="currentColor"/>
+                <path d="M5 11.5C5 15.09 7.91 18 11.5 18H12.5C16.09 18 19 15.09 19 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 18V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M9 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button class="send-btn" id="chatSend" type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const copy = {
+      en: {
+        studentLogin: "Student Login", facultyLogin: "Faculty Login", admissionLink: "Admissions Open 2026", utilityHighlight1: "AI-powered bilingual student support portal", utilityHighlight2: "Voice and chatbot access available 24/7",
+        noticeLabel: "Campus Updates", notice1: "Admission guidance for 2026 batch is now open.", notice2: "Semester hall ticket support is live through UniMitra AI.", notice3: "Second installment fee deadline reminders are active.", notice4: "Department timetable revisions have been published.", notice5: "Admission guidance for 2026 batch is now open.", notice6: "Semester hall ticket support is live through UniMitra AI.", notice7: "Second installment fee deadline reminders are active.", notice8: "Department timetable revisions have been published.",
+        brandTitle: "UniMitra AI", brandSubtitle: "University Student Support Portal", navProgrammes: "Programmes", navServices: "Student Services", navAnnouncements: "News & Events", navCampus: "Campus Life", langEnglish: "English", langTamil: "Tamil",
+        heroEyebrow: "Modern Institutional Experience", heroTitle: "AI-enabled student support in a university portal format", heroText: "UniMitra AI combines the look of a formal college website with smart assistance for courses, examinations, fees, timetables, reminders, voice queries and bilingual student support.", heroPrimary: "Open Chatbot", heroSecondary: "Explore Programmes", badge1Title: "24/7", badge1Text: "AI Help Desk", badge2Title: "2", badge2Text: "Languages", badge3Title: "Voice", badge3Text: "Mic Input",
+        heroSideTitle: "Student support at a glance", heroSideText: "From first-year admissions to semester reminders, the portal helps students navigate academics and campus administration smoothly.", stat1Title: "Courses & Admission", stat1Text: "View available programmes, department information and admissions help for new applicants.", stat2Title: "Exams & Hall Tickets", stat2Text: "Ask about exam schedules, hall ticket release dates and internal assessment updates.", stat3Title: "Fees & Timetable", stat3Text: "Students can check payment windows, due dates, class timing support and assignment reminders.",
+        programEyebrow: "Programs We Offer", programTitle: "Choose your path and view the complete course list in table format", programNote: "Students can check UG and PG courses one by one in the table and ask the chatbot for more details anytime.", program1Title: "Undergraduate Courses", program1Text: "", program2Title: "Postgraduate Courses", program2Text: "", program3Title: "Always Available Help", program3Text: "Students can open the floating chatbot or microphone and receive instant information without waiting for office hours.", ugTableHead1: "S.No", ugTableHead2: "Course", pgTableHead1: "S.No", pgTableHead2: "Course",
+        ugCourse1: "B.A Tamil", ugCourse2: "B.A English", ugCourse3: "B.Sc Computer Science", ugCourse4: "B.Sc Chemistry", ugCourse5: "B.Sc Mathematics", ugCourse6: "B.Sc Physics", ugCourse7: "B.C.A", ugCourse8: "B.Com", ugCourse9: "B.B.A",
+        pgCourse1: "M.A Tamil", pgCourse2: "M.A English", pgCourse3: "M.Sc Computer Science", pgCourse4: "M.Sc Chemistry", pgCourse5: "M.Sc Mathematics", pgCourse6: "M.Sc Physics", pgCourse7: "M.C.A", pgCourse8: "M.Com", pgCourse9: "M.B.A",
+        servicesEyebrow: "Student Services", servicesTitle: "Core help areas covered by the AI assistant", servicesNote: "The portal keeps the presentation formal, but the student support flow is fast, conversational and easy to use.", service1Title: "Course Details", service1Text: "Ask for course details and the chatbot will split them into UG courses and PG courses with the full department list.", service2Title: "Exam Guidance", service2Text: "Students can ask about exam dates, internal schedules, hall tickets and semester preparation timelines.", service3Title: "Fee Assistance", service3Text: "Get support on fee structure, installment windows, payment dates and upcoming due reminders.", service4Title: "Timetable Support", service4Text: "The chatbot helps with daily class timings, revised schedules, department-specific hours and lab sessions.", service5Title: "Assignment Alerts", service5Text: "Students can ask for reminders on record submissions, seminar deadlines and practical reviews.", service6Title: "Voice & Chat Access", service6Text: "The floating mic and chatbot stay available on every screen so help is always one tap away.",
+        announceEyebrow: "News & Events", announceTitle: "Important updates presented in a college-website format", announceNote: "The announcements area mirrors a formal institutional layout while the chatbot explains each update in student-friendly language.", featuredTag: "Featured Update", featuredTitle: "Semester examination registration closes on 25 June", featuredText: "Students must review selected papers, submit required records and confirm exam registration before the deadline.", featuredPoint1: "Hall ticket release starts one week before the first exam.", featuredPoint2: "Fee clearance is required before final hall ticket generation.", featuredPoint3: "UniMitra AI can answer schedule and hall ticket questions instantly.", meta1: "Admissions Desk", announce1Title: "UG admissions counselling this Friday", announce1Text: "The admissions support team will guide students on eligibility, required documents and application flow.", meta2: "Finance Office", announce2Title: "Second installment fee window opens Monday", announce2Text: "Students can use the portal to understand due dates, late fee policy and payment reminders.", meta3: "Academic Section", announce3Title: "Department timetable revision published", announce3Text: "Revised class hours for science labs and language electives are now active for the new week.",
+        campusEyebrow: "Campus Life", campusTitle: "A portal that feels institutional but supports students conversationally", campusNote: "This section adds the broader campus-site feel seen in modern college websites, while AI support remains at the center.", campus1Title: "Department Offices", campus1Text: "Find which office handles course changes, academic records, certificates and semester coordination.", campus2Title: "Library & Labs", campus2Text: "Check lab hours, library access, digital resources, record submission desks and research spaces.", campus3Title: "Student Welfare", campus3Text: "The portal can guide students toward scholarship support, mentoring, grievance help and activity notices.", campus4Title: "Transport & Access", campus4Text: "Get support on bus routes, campus access timings, visitor guidance and event-day movement plans.",
+        insightEyebrow: "Why Students Use It", insightTitle: "A support experience that fits admissions, semester life and exam season", insightNote: "These quick highlights give the page the fuller multi-block institutional rhythm seen on college homepages.", insight1Title: "Fast Answers", insight1Text: "The AI chatbot responds immediately to common academic and administrative questions.", insight2Title: "Tamil + English", insight2Text: "Students can switch the full website language and still get meaningful chatbot support.", insight3Title: "Voice Friendly", insight3Text: "The mic popup allows students to speak their question and continue inside the chatbot flow.", insight4Title: "Campus Ready", insight4Text: "The visual structure feels formal and credible, matching a real college information portal.",
+        ctaEyebrow: "Get Started", ctaTitle: "Open UniMitra AI and ask about programmes, hall tickets, fees or timetable instantly", ctaButton: "Launch AI Support", footerText: "UniMitra AI Student Support Portal | Institutional layout with smart bilingual support",
+        chatTitle: "UniMitra AI Assistant", chatStatus: "Online now | Text support", chatInputPlaceholder: "Ask about courses, exams, fees, timetable or reminders", chatSend: "Send", voiceReady: "Tap the mic and speak your question.", voiceListening: "Listening... speak clearly.", voiceDetected: "Voice detected. Preparing your message...", voiceNoSpeech: "No speech detected. Please try again.", voiceUnsupported: "Voice input is not supported in this browser.", chip1: "UG & PG Courses", chip2: "Hall Tickets", chip3: "Fee Deadline", chip4: "Timetable", chip5: "Reminders", chip6: "Tamil Support",
+        welcome1: "Welcome to UniMitra AI. I can help with courses, exams, fees, timetables, hostel, scholarships and assignment reminders.", welcome2: "Try asking: What UG and PG courses are available? | When are hall tickets released? | What is the fee deadline? | Is hostel available?", replyCourses: "The course details are split into UG and PG courses. UG courses are B.A Tamil, B.A English, B.Sc Computer Science, B.Sc Chemistry, B.Sc Mathematics, B.Sc Physics, B.C.A, B.Com and B.B.A. PG courses are M.A Tamil, M.A English, M.Sc Computer Science, M.Sc Chemistry, M.Sc Mathematics, M.Sc Physics, M.C.A, M.Com and M.B.A. If you want, I can also explain eligibility and admission support.", replyExams: "Semester exam schedules are usually published by the Exam Cell. The current exam registration deadline is June 25, 2026. Hall tickets are released about one week before the first exam, and students should verify registration details before download. Tuition fee clearance is required for final hall ticket generation.", replyFees: "Sample fee data: UG Arts and Commerce programs start from Rs. 18,000 per semester, UG Science and Computer programs from Rs. 24,000 per semester, and PG programs from Rs. 28,000 per semester. The second installment window opens on Monday and late fees may apply after the deadline.", replyTimetable: "Class timetable support includes department schedules, lab slots and revised weekly class hours. Please mention your department or semester for a more specific timetable answer.", replyReminders: "Current reminders include assignment submission tracking, practical record reviews, seminar dates and exam preparation alerts. Example reminders: record submission on Friday, seminar review on Tuesday, and exam registration closing on June 25, 2026.", replyAdmission: "Admissions for the 2026 batch are open. Students should keep their 10th and 12th mark sheets, transfer certificate, community certificate if applicable, Aadhaar copy, and passport-size photos ready. The admission help desk works from 9:30 AM to 4:30 PM on working days.", replyHostel: "Sample hostel data: separate hostel support is available for boys and girls. Hostel fee starts from Rs. 35,000 per year including room and basic amenities. Students should contact the hostel office between 10:00 AM and 4:00 PM for room allotment.", replyScholarship: "Sample scholarship support: first-generation, community-based, merit, and government scholarships can be applied through the student welfare office. Students should keep income certificate, community certificate, and bank passbook copy ready.", replyTransport: "Sample transport data: college buses cover Chennai, ECR, Mamallapuram, Kalpakkam, and nearby town routes. Transport enquiry time is 9:00 AM to 5:00 PM on working days.", replyOffice: "Sample office timings: Admission Office - 9:30 AM to 4:30 PM, Exam Cell - 10:00 AM to 4:00 PM, Accounts Office - 9:30 AM to 3:30 PM, Student Welfare Desk - 10:00 AM to 4:30 PM.", replyPlacement: "Sample placement support: final-year students can attend aptitude training, resume workshops, and mock interviews through the placement cell. Placement office guidance is available every Wednesday and Friday afternoon.", replyContact: "Sample contact support: Admission Help Desk - 044-4000 2100, Exam Cell - 044-4000 2125, Accounts Office - 044-4000 2130, Student Welfare Desk - 044-4000 2145. You can also ask the concerned office during working hours.", replyDefault: "I can help with courses, admissions, exams, hall tickets, fees, timetables, hostel, scholarships, transport and reminders. Please tell me what you would like to know."
+      },
+      ta: {
+        studentLogin: "மாணவர் உள்நுழைவு", facultyLogin: "ஆசிரியர் உள்நுழைவு", admissionLink: "2026 சேர்க்கைகள் திறந்துள்ளன", utilityHighlight1: "AI அடிப்படையிலான இருமொழி மாணவர் ஆதரவு தளம்", utilityHighlight2: "குரல் மற்றும் சாட்பாட் அணுகல் 24/7 கிடைக்கும்",
+        noticeLabel: "வளாக புதுப்பிப்புகள்", notice1: "2026 மாணவர் சேர்க்கை வழிகாட்டல் தற்போது தொடங்கியுள்ளது.", notice2: "செமஸ்டர் ஹால் டிக்கெட் உதவி யூனிமித்ரா AI மூலம் செயலில் உள்ளது.", notice3: "இரண்டாம் தவணை கட்டண நினைவூட்டல்கள் செயல்பாட்டில் உள்ளன.", notice4: "துறை காலஅட்டவணை திருத்தங்கள் வெளியிடப்பட்டுள்ளன.", notice5: "2026 மாணவர் சேர்க்கை வழிகாட்டல் தற்போது தொடங்கியுள்ளது.", notice6: "செமஸ்டர் ஹால் டிக்கெட் உதவி யூனிமித்ரா AI மூலம் செயலில் உள்ளது.", notice7: "இரண்டாம் தவணை கட்டண நினைவூட்டல்கள் செயல்பாட்டில் உள்ளன.", notice8: "துறை காலஅட்டவணை திருத்தங்கள் வெளியிடப்பட்டுள்ளன.",
+        brandTitle: "யூனிமித்ரா AI", brandSubtitle: "பல்கலைக்கழக மாணவர் ஆதரவு தளம்", navProgrammes: "பாடநெறிகள்", navServices: "மாணவர் சேவைகள்", navAnnouncements: "செய்திகள் & நிகழ்வுகள்", navCampus: "வளாக வாழ்க்கை", langEnglish: "English", langTamil: "தமிழ்",
+        heroEyebrow: "நவீன கல்வி நிறுவன அனுபவம்", heroTitle: "பல்கலைக்கழக தள வடிவில் AI மாணவர் ஆதரவு", heroText: "யூனிமித்ரா AI ஒரு முறையான கல்லூரி இணையதள தோற்றத்துடன், படிப்புகள், தேர்வுகள், கட்டணங்கள், காலஅட்டவணைகள், நினைவூட்டல்கள், குரல் கேள்விகள் மற்றும் இருமொழி மாணவர் ஆதரவை ஒன்றாக வழங்குகிறது.", heroPrimary: "சாட்பாட் திறக்க", heroSecondary: "பாடநெறிகளை பார்க்க", badge1Title: "24/7", badge1Text: "AI உதவி மையம்", badge2Title: "2", badge2Text: "மொழிகள்", badge3Title: "குரல்", badge3Text: "மைக் உள்ளீடு",
+        heroSideTitle: "மாணவர் ஆதரவு ஒரு பார்வையில்", heroSideText: "முதல் ஆண்டு சேர்க்கை முதல் செமஸ்டர் நினைவூட்டல்கள் வரை, இந்த தளம் மாணவர்களுக்கு கல்வி மற்றும் வளாக நிர்வாகத்தை எளிதாக அணுக உதவுகிறது.", stat1Title: "பாடநெறிகள் & சேர்க்கை", stat1Text: "பாடநெறிகள், துறை தகவல்கள் மற்றும் புதிய மாணவர் சேர்க்கை உதவி அனைத்தையும் பார்க்கலாம்.", stat2Title: "தேர்வுகள் & ஹால் டிக்கெட்", stat2Text: "தேர்வு அட்டவணை, ஹால் டிக்கெட் வெளியீட்டு தேதி மற்றும் உள்ளக தேர்வு புதுப்பிப்புகள் குறித்து கேட்கலாம்.", stat3Title: "கட்டணம் & காலஅட்டவணை", stat3Text: "கட்டண சாளரங்கள், கடைசி தேதிகள், வகுப்பு நேர உதவி மற்றும் அசைன்மென்ட் நினைவூட்டல்கள் கிடைக்கும்.",
+        programEyebrow: "நாங்கள் வழங்கும் பாடநெறிகள்", programTitle: "முழு பாடநெறி பட்டியலை அட்டவணை வடிவில் பார்க்கலாம்", programNote: "UG மற்றும் PG பாடநெறிகளை ஒன்றன்பின் ஒன்று அட்டவணையில் பார்த்து, மேலும் விவரங்களுக்கு சாட்பாட் கேட்கலாம்.", program1Title: "இளநிலை பாடநெறிகள்", program1Text: "", program2Title: "முதுநிலை பாடநெறிகள்", program2Text: "", program3Title: "எப்போதும் உதவி", program3Text: "மாணவர்கள் மிதக்கும் சாட்பாட் அல்லது மைக்ரோஃபோனை திறந்து அலுவலக நேரம் காத்திருக்காமல் உடனடி தகவல் பெறலாம்.", ugTableHead1: "எண்", ugTableHead2: "பாடநெறி", pgTableHead1: "எண்", pgTableHead2: "பாடநெறி",
+        ugCourse1: "B.A தமிழ்", ugCourse2: "B.A ஆங்கிலம்", ugCourse3: "B.Sc கணினி அறிவியல்", ugCourse4: "B.Sc வேதியியல்", ugCourse5: "B.Sc கணிதம்", ugCourse6: "B.Sc இயற்பியல்", ugCourse7: "B.C.A", ugCourse8: "B.Com", ugCourse9: "B.B.A",
+        pgCourse1: "M.A தமிழ்", pgCourse2: "M.A ஆங்கிலம்", pgCourse3: "M.Sc கணினி அறிவியல்", pgCourse4: "M.Sc வேதியியல்", pgCourse5: "M.Sc கணிதம்", pgCourse6: "M.Sc இயற்பியல்", pgCourse7: "M.C.A", pgCourse8: "M.Com", pgCourse9: "M.B.A",
+        servicesEyebrow: "மாணவர் சேவைகள்", servicesTitle: "AI உதவியாளர் கையாளும் முக்கிய ஆதரவு பகுதிகள்", servicesNote: "இந்த தளம் முறையான காட்சி அமைப்பை வைத்திருக்கிறது, ஆனால் மாணவர் ஆதரவு அனுபவம் வேகமாகவும் உரையாடலாகவும் இருக்கும்.", service1Title: "பாடநெறி விவரங்கள்", service1Text: "பாடநெறி விவரங்கள் கேட்டால், சாட்பாட் அதை UG பாடநெறிகள் மற்றும் PG பாடநெறிகள் என்று தனியாக பிரித்து முழுப் பட்டியலுடன் சொல்லும்.", service2Title: "தேர்வு வழிகாட்டல்", service2Text: "மாணவர்கள் தேர்வு தேதிகள், உள்ளக அட்டவணைகள், ஹால் டிக்கெட் மற்றும் செமஸ்டர் தயாரிப்பு காலவரிசை குறித்து கேட்கலாம்.", service3Title: "கட்டண உதவி", service3Text: "கட்டண அமைப்பு, தவணை சாளரம், செலுத்த வேண்டிய தேதிகள் மற்றும் வரவிருக்கும் நினைவூட்டல்கள் குறித்து உதவி பெறலாம்.", service4Title: "காலஅட்டவணை ஆதரவு", service4Text: "தினசரி வகுப்பு நேரம், மாற்றப்பட்ட அட்டவணை, துறை நேரங்கள் மற்றும் ஆய்வக அமர்வுகள் குறித்து சாட்பாட் உதவுகிறது.", service5Title: "அசைன்மென்ட் நினைவூட்டல்கள்", service5Text: "ரெக்கார்டு சமர்ப்பிப்பு, செமினார் கடைசி தேதி மற்றும் செய்முறை ஆய்வுக்கான நினைவூட்டல்களை மாணவர்கள் கேட்கலாம்.", service6Title: "குரல் & சாட் அணுகல்", service6Text: "மிதக்கும் மைக் மற்றும் சாட்பாட் ஒவ்வொரு திரையிலும் கிடைக்கும், எனவே உதவி எப்போதும் ஒரு தொட்டில் கிடைக்கும்.",
+        announceEyebrow: "செய்திகள் & நிகழ்வுகள்", announceTitle: "கல்லூரி இணையதள வடிவில் வழங்கப்படும் முக்கிய புதுப்பிப்புகள்", announceNote: "அறிவிப்புகள் பகுதி ஒரு முறையான கல்வி தள அமைப்பை உருவாக்குகிறது; அதே நேரத்தில் சாட்பாட் ஒவ்வொரு புதுப்பிப்பையும் எளிய மாணவர் மொழியில் விளக்குகிறது.", featuredTag: "முக்கிய புதுப்பிப்பு", featuredTitle: "செமஸ்டர் தேர்வு பதிவு ஜூன் 25 அன்று முடிகிறது", featuredText: "மாணவர்கள் தேர்வு பாடங்களை சரிபார்த்து, தேவையான பதிவுகளைச் சமர்ப்பித்து, கடைசி தேதிக்குள் தேர்வு பதிவை உறுதிப்படுத்த வேண்டும்.", featuredPoint1: "முதல் தேர்வுக்கு ஒரு வாரம் முன் ஹால் டிக்கெட் வெளியீடு தொடங்கும்.", featuredPoint2: "இறுதி ஹால் டிக்கெட் உருவாக்கத்திற்கு கட்டண அனுமதி அவசியம்.", featuredPoint3: "அட்டவணை மற்றும் ஹால் டிக்கெட் கேள்விகளுக்கு யூனிமித்ரா AI உடனே பதில் தரும்.", meta1: "சேர்க்கை அலுவலகம்", announce1Title: "இளநிலை சேர்க்கை ஆலோசனை இந்த வெள்ளிக்கிழமை", announce1Text: "தகுதி, ஆவணங்கள் மற்றும் விண்ணப்ப செயல்முறை குறித்து சேர்க்கை ஆதரவு குழு மாணவர்களை வழிநடத்தும்.", meta2: "நிதி அலுவலகம்", announce2Title: "இரண்டாம் தவணை கட்டண சாளரம் திங்கட்கிழமை திறக்கிறது", announce2Text: "மாணவர்கள் கடைசி தேதி, தாமத அபராதம் மற்றும் கட்டண நினைவூட்டல்களை தளத்தின் மூலம் புரிந்துகொள்ளலாம்.", meta3: "கல்வி பிரிவு", announce3Title: "துறை காலஅட்டவணை திருத்தம் வெளியிடப்பட்டது", announce3Text: "அறிவியல் ஆய்வகங்கள் மற்றும் மொழி தேர்வுப் பாடங்களுக்கான புதிய வகுப்பு நேரங்கள் இந்த வாரத்திற்கு செயல்பாட்டில் உள்ளன.",
+        campusEyebrow: "வளாக வாழ்க்கை", campusTitle: "கல்வி நிறுவனத்துக்கேற்ற தோற்றத்துடன் மாணவர்களை உரையாடலாக ஆதரிக்கும் தளம்", campusNote: "இந்த பகுதி நவீன கல்லூரி இணையதளங்களில் காணப்படும் விரிவான வளாக அமைப்பை தருகிறது; அதே நேரத்தில் AI ஆதரவு மையமாகவே தொடர்கிறது.", campus1Title: "துறை அலுவலகங்கள்", campus1Text: "பாடமாற்றம், கல்வி பதிவுகள், சான்றிதழ்கள் மற்றும் செமஸ்டர் ஒருங்கிணைப்பை எந்த அலுவலகம் கவனிக்கிறது என்பதை அறியலாம்.", campus2Title: "நூலகம் & ஆய்வகங்கள்", campus2Text: "ஆய்வக நேரம், நூலக அணுகல், டிஜிட்டல் வளங்கள், பதிவு சமர்ப்பிப்பு மேசைகள் மற்றும் ஆராய்ச்சி இடங்கள் குறித்து பார்க்கலாம்.", campus3Title: "மாணவர் நலன்", campus3Text: "உதவித்தொகை, வழிகாட்டல், குறைதீர் ஆதரவு மற்றும் மாணவர் செயல்பாடுகள் குறித்து தளம் வழிகாட்டும்.", campus4Title: "போக்குவரத்து & அணுகல்", campus4Text: "பேருந்து பாதைகள், வளாக நுழைவு நேரம், வருகையாளர் வழிகாட்டல் மற்றும் நிகழ்ச்சி நாள் இயக்கத் திட்டங்கள் குறித்து உதவி பெறலாம்.",
+        insightEyebrow: "மாணவர்கள் பயன்படுத்தும் காரணங்கள்", insightTitle: "சேர்க்கை, செமஸ்டர் வாழ்க்கை மற்றும் தேர்வு காலத்துக்கு பொருந்தும் ஆதரவு அனுபவம்", insightNote: "இந்தச் சிறு விளக்கப் பகுதிகள் கல்லூரி முகப்புப் பக்கங்களில் காணப்படும் முழுமையான பல்பகுதி அமைப்பை வழங்குகின்றன.", insight1Title: "விரைவு பதில்கள்", insight1Text: "AI சாட்பாட் பொதுவான கல்வி மற்றும் நிர்வாக கேள்விகளுக்கு உடனடியாக பதிலளிக்கிறது.", insight2Title: "தமிழ் + ஆங்கிலம்", insight2Text: "முழு தள மொழியையும் மாற்றியபோதும் பொருத்தமான சாட்பாட் ஆதரவு தொடர்கிறது.", insight3Title: "குரல் வசதி", insight3Text: "மைக் பாப்அப் மாணவர்கள் பேசிக் கேள்வி கேட்டு அதே உரையாடலை சாட்பாடில் தொடர அனுமதிக்கிறது.", insight4Title: "வளாகத்துக்கு பொருத்தம்", insight4Text: "இந்த காட்சி அமைப்பு நம்பகமான, முறையான கல்வி தள அனுபவத்தை அளிக்கிறது.",
+        ctaEyebrow: "தொடங்குங்கள்", ctaTitle: "பாடநெறிகள், ஹால் டிக்கெட், கட்டணங்கள் அல்லது காலஅட்டவணை பற்றி உடனே UniMitra AI-யிடம் கேளுங்கள்", ctaButton: "AI ஆதரவை திறக்க", footerText: "யூனிமித்ரா AI மாணவர் ஆதரவு தளம் | முறையான வடிவமைப்பில் புத்திசாலியான இருமொழி உதவி",
+        chatTitle: "யூனிமித்ரா AI உதவியாளர்", chatStatus: "இப்போது ஆன்லைனில் உள்ளது | உரை ஆதரவு", chatInputPlaceholder: "படிப்புகள், தேர்வுகள், கட்டணம், காலஅட்டவணை அல்லது நினைவூட்டல்கள் பற்றி கேளுங்கள்", chatSend: "அனுப்பு", voiceReady: "Mic button-ஐ அழுத்தி உங்கள் கேள்வியை பேசுங்கள்.", voiceListening: "கேட்டுக்கொண்டு இருக்கிறது... தெளிவாக பேசுங்கள்.", voiceDetected: "குரல் கண்டறியப்பட்டது. உங்கள் message தயாராகிறது...", voiceNoSpeech: "குரல் பதிவாகவில்லை. மீண்டும் முயற்சிக்கவும்.", voiceUnsupported: "இந்த browser-ல் voice input support இல்லை.", chip1: "UG & PG பாடநெறிகள்", chip2: "ஹால் டிக்கெட்", chip3: "கட்டண கடைசி தேதி", chip4: "காலஅட்டவணை", chip5: "நினைவூட்டல்கள்", chip6: "தமிழ் ஆதரவு",
+        welcome1: "யூனிமித்ரா AI-க்கு வரவேற்கிறோம். படிப்புகள், தேர்வுகள், கட்டணங்கள், காலஅட்டவணைகள், விடுதி, உதவித்தொகை மற்றும் அசைன்மென்ட் நினைவூட்டல்கள் குறித்து உதவ முடியும்.", welcome2: "இப்படி கேளுங்கள்: என்னென்ன UG மற்றும் PG பாடநெறிகள் உள்ளன? | ஹால் டிக்கெட் எப்போது வரும்? | கட்டண கடைசி தேதி எது? | விடுதி வசதி உள்ளதா?", replyCourses: "பாடநெறி விவரங்கள் UG மற்றும் PG என்று பிரிக்கப்பட்டுள்ளன. UG பாடநெறிகள்: பி.ஏ தமிழ், பி.ஏ ஆங்கிலம், பி.எஸ்்சி கணினி அறிவியல், பி.எஸ்்சி வேதியியல், பி.எஸ்்சி கணிதம், பி.எஸ்்சி இயற்பியல், பி.சி.ஏ, பி.காம் மற்றும் பி.பி.ஏ. PG பாடநெறிகள்: எம்.ஏ தமிழ், எம்.ஏ ஆங்கிலம், எம்.எஸ்்சி கணினி அறிவியல், எம்.எஸ்்சி வேதியியல், எம்.எஸ்்சி கணிதம், எம்.எஸ்்சி இயற்பியல், எம்.சி.ஏ, எம்.காம் மற்றும் எம்.பி.ஏ. வேண்டுமென்றால் தகுதி மற்றும் சேர்க்கை விவரங்களையும் சொல்ல முடியும்.", replyExams: "செமஸ்டர் தேர்வு அட்டவணையை பொதுவாக தேர்வு பிரிவு வெளியிடும். தற்போதைய தேர்வு பதிவு கடைசி தேதி ஜூன் 25, 2026. முதல் தேர்வுக்கு ஒரு வாரம் முன் ஹால் டிக்கெட் வெளியிடப்படும்; இறுதி ஹால் டிக்கெட்டுக்கு கட்டண அனுமதி அவசியம்.", replyFees: "மாதிரி கட்டண விவரம்: UG Arts மற்றும் Commerce பாடநெறிகள் ஒரு செமஸ்டருக்கு ரூ.18,000 முதல், UG Science மற்றும் Computer பாடநெறிகள் ரூ.24,000 முதல், PG பாடநெறிகள் ரூ.28,000 முதல் தொடங்குகின்றன. அடுத்த இரண்டாம் தவணை கட்டண சாளரம் திங்கட்கிழமை திறக்கப்படுகிறது.", replyTimetable: "துறை அட்டவணை, ஆய்வக நேரம் மற்றும் வாராந்திர வகுப்பு நேர மாற்றங்கள் குறித்து உதவி கிடைக்கும். இன்னும் துல்லியமான பதில் வேண்டுமெனில் உங்கள் துறை அல்லது செமஸ்டரை சொல்லுங்கள்.", replyReminders: "தற்போதைய நினைவூட்டல்களில் அசைன்மென்ட் சமர்ப்பிப்பு, செய்முறை பதிவு ஆய்வு, செமினார் தேதிகள் மற்றும் தேர்வு தயாரிப்பு அறிவுறுத்தல்கள் அடங்கும். உதாரணமாக வெள்ளிக்கிழமை ரெக்கார்ட் சமர்ப்பிப்பு, செவ்வாய்க்கிழமை செமினார் மதிப்பாய்வு, ஜூன் 25 தேர்வு பதிவு கடைசி தேதி உள்ளது.", replyAdmission: "2026 மாணவர் சேர்க்கை திறந்துள்ளது. 10ம் வகுப்பு, 12ம் வகுப்பு மதிப்பெண் சான்றிதழ், மாற்றுச் சான்றிதழ், ஆதார் நகல், பாஸ்போர்ட் அளவு புகைப்படம் மற்றும் தேவையான பிற ஆவணங்களை தயார் வைத்திருக்க வேண்டும். சேர்க்கை அலுவலகம் காலை 9:30 முதல் மாலை 4:30 வரை செயல்படும்.", replyHostel: "மாதிரி விடுதி தகவல்: ஆண்கள் மற்றும் பெண்களுக்கு தனித்தனியாக விடுதி வசதி உள்ளது. ஆண்டு விடுதி கட்டணம் ரூ.35,000 முதல் தொடங்குகிறது. அறை ஒதுக்கீடு தொடர்பாக விடுதி அலுவலகத்தை காலை 10:00 முதல் மாலை 4:00 வரை தொடர்புகொள்ளலாம்.", replyScholarship: "மாதிரி உதவித்தொகை தகவல்: முதன்முறை பட்டதாரி, சமூகஅடிப்படை, திறமை மற்றும் அரசு உதவித்தொகைகள் மாணவர் நல அலுவலகம் மூலம் பெறலாம். வருமானச் சான்று, சமூகச் சான்று மற்றும் வங்கி புத்தக நகல் தயார் இருக்க வேண்டும்.", replyTransport: "மாதிரி போக்குவரத்து தகவல்: கல்லூரி பேருந்துகள் சென்னை, ECR, மாமல்லபுரம், கல்பாக்கம் மற்றும் அருகிலுள்ள பகுதிகளைச் சேர்ந்த பாதைகளில் இயக்கப்படுகின்றன. போக்குவரத்து விசாரணை நேரம் காலை 9:00 முதல் மாலை 5:00 வரை.", replyOffice: "மாதிரி அலுவலக நேரம்: சேர்க்கை அலுவலகம் - 9:30 AM முதல் 4:30 PM, தேர்வு பிரிவு - 10:00 AM முதல் 4:00 PM, கணக்குகள் அலுவலகம் - 9:30 AM முதல் 3:30 PM, மாணவர் நல மையம் - 10:00 AM முதல் 4:30 PM.", replyPlacement: "மாதிரி placement support: இறுதி ஆண்டு மாணவர்களுக்கு aptitude training, resume workshop, mock interview போன்றவை placement cell மூலம் வழங்கப்படும். Placement அலுவலக வழிகாட்டல் புதன் மற்றும் வெள்ளி பிற்பகலில் கிடைக்கும்.", replyContact: "மாதிரி தொடர்பு எண்கள்: Admission Help Desk - 044-4000 2100, Exam Cell - 044-4000 2125, Accounts Office - 044-4000 2130, Student Welfare Desk - 044-4000 2145. வேலைநேரத்தில் தொடர்பு கொள்ளலாம்.", replyDefault: "பாடநெறிகள், சேர்க்கை, தேர்வுகள், ஹால் டிக்கெட், கட்டணம், காலஅட்டவணை, விடுதி, உதவித்தொகை, போக்குவரத்து மற்றும் அசைன்மென்ட் நினைவூட்டல்கள் குறித்து உதவ முடியும். நீங்கள் தெரிந்துகொள்ள விரும்புவது என்ன என்று சொல்லுங்கள்."
+      },
+      tg: {
+        replyCourses: "Course details UG um PG um split pannirukkom. UG la B.A Tamil, B.A English, B.Sc Computer Science, B.Sc Chemistry, B.Sc Mathematics, B.Sc Physics, B.C.A, B.Com, B.B.A irukku. PG la M.A Tamil, M.A English, M.Sc Computer Science, M.Sc Chemistry, M.Sc Mathematics, M.Sc Physics, M.C.A, M.Com, M.B.A irukku.",
+        replyExams: "Semester exam schedule usually Exam Cell release pannum. Current exam registration last date June 25, 2026. Hall ticket first exam-ku oru week munnadi varum. Final hall ticket-ku fee clearance thevai.",
+        replyFees: "Sample fee details sollren. UG Arts/Commerce semester-ku around Rs.18,000 start aagum. UG Science/Computer semester-ku around Rs.24,000 start aagum. PG programs semester-ku around Rs.28,000 start aagum. Next second installment window Monday open aagum.",
+        replyTimetable: "Timetable support la department schedule, lab slot, weekly class hours details kudukkalaam. Unga course illa semester sollunga, more specific answer kudukren.",
+        replyReminders: "Current reminders la assignment submission, practical record review, seminar date, exam preparation alerts irukku. Example-a Friday record submission, Tuesday seminar review, June 25 exam registration last date irukku.",
+        replyAdmission: "2026 batch admission open irukku. 10th, 12th marksheet, TC, Aadhaar copy, passport size photo ready-a vainga. Admission office working time 9:30 AM to 4:30 PM.",
+        replyHostel: "Sample hostel facility irukku. Boys and girls-ku separate hostel support irukku. Hostel fee yearly around Rs.35,000 start aagum. Room allotment-ku hostel office 10:00 AM to 4:00 PM contact pannunga.",
+        replyScholarship: "Sample scholarship support la first graduate, merit, community-based, government scholarship options irukku. Income certificate, community certificate, bank passbook copy thevai.",
+        replyTransport: "Sample transport support la Chennai, ECR, Mamallapuram, Kalpakkam side bus routes irukku. Transport enquiry timing 9:00 AM to 5:00 PM.",
+        replyOffice: "Sample office timings: Admission office 9:30 AM to 4:30 PM, Exam Cell 10:00 AM to 4:00 PM, Accounts office 9:30 AM to 3:30 PM, Student Welfare desk 10:00 AM to 4:30 PM.",
+        replyPlacement: "Sample placement support la aptitude training, resume workshop, mock interview sessions irukku. Placement guidance mostly Wednesday and Friday afternoon kudukkappadum.",
+        replyContact: "Sample contact numbers: Admission Help Desk 044-4000 2100, Exam Cell 044-4000 2125, Accounts Office 044-4000 2130, Student Welfare Desk 044-4000 2145.",
+        replyDefault: "Courses, admission, exams, hall ticket, fees, timetable, hostel, scholarship, transport, placement, reminders pathi help pannalaam. Enna detail venum nu sollunga."
+      }
+    };
+
+    const ids = ["studentLogin","facultyLogin","admissionLink","utilityHighlight1","utilityHighlight2","noticeLabel","notice1","notice2","notice3","notice4","notice5","notice6","notice7","notice8","brandTitle","brandSubtitle","navProgrammes","navServices","navAnnouncements","navCampus","langEnglish","langTamil","heroEyebrow","heroTitle","heroText","heroPrimary","heroSecondary","badge1Title","badge1Text","badge2Title","badge2Text","badge3Title","badge3Text","heroSideTitle","heroSideText","stat1Title","stat1Text","stat2Title","stat2Text","stat3Title","stat3Text","programEyebrow","programTitle","programNote","program1Title","program1Text","program2Title","program2Text","program3Title","program3Text","ugTableHead1","ugTableHead2","pgTableHead1","pgTableHead2","ugCourse1","ugCourse2","ugCourse3","ugCourse4","ugCourse5","ugCourse6","ugCourse7","ugCourse8","ugCourse9","pgCourse1","pgCourse2","pgCourse3","pgCourse4","pgCourse5","pgCourse6","pgCourse7","pgCourse8","pgCourse9","servicesEyebrow","servicesTitle","servicesNote","service1Title","service1Text","service2Title","service2Text","service3Title","service3Text","service4Title","service4Text","service5Title","service5Text","service6Title","service6Text","announceEyebrow","announceTitle","announceNote","featuredTag","featuredTitle","featuredText","featuredPoint1","featuredPoint2","featuredPoint3","meta1","announce1Title","announce1Text","meta2","announce2Title","announce2Text","meta3","announce3Title","announce3Text","campusEyebrow","campusTitle","campusNote","campus1Title","campus1Text","campus2Title","campus2Text","campus3Title","campus3Text","campus4Title","campus4Text","insightEyebrow","insightTitle","insightNote","insight1Title","insight1Text","insight2Title","insight2Text","insight3Title","insight3Text","insight4Title","insight4Text","ctaEyebrow","ctaTitle","ctaButton","footerText","chatTitle","chatStatus","chatSend","chip1","chip2","chip3","chip4","chip5","chip6"];
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const chatFeed = document.getElementById("chatFeed");
+    const chatInput = document.getElementById("chatInput");
+    const voiceFab = document.getElementById("voiceFab");
+    const voiceStart = document.getElementById("voiceStart");
+    const voiceStatusText = document.getElementById("voiceStatusText");
+    const chatWidget = document.getElementById("chatbot");
+    const langEnglish = document.getElementById("langEnglish");
+    const langTamil = document.getElementById("langTamil");
+    const chatSettingsToggle = document.getElementById("chatSettingsToggle");
+    const chatSettingsPanel = document.getElementById("chatSettingsPanel");
+    const openaiApiKeyInput = document.getElementById("openaiApiKeyInput");
+    const saveApiKeyBtn = document.getElementById("saveApiKeyBtn");
+    const settingsKeyStatus = document.getElementById("settingsKeyStatus");
+    let currentLanguage = "en";
+    let recognition = null;
+    let isListening = false;
+
+    const systemPrompt = `You are UniMitra AI, the official student support portal assistant for the School of Arts and Science, Paiyanoor (VMRF). You provide precise, friendly, and helpful academic and administrative assistance.
+
+Core Interaction Rules:
+1. Language Adaptability: Always respond in the language or dialect used by the user.
+   - If they write in Tamil script (Unicode), reply in clear, professional Tamil.
+   - If they write in English, reply in standard English.
+   - If they use Tanglish (Tamil phrases written phonetically in Roman script, e.g., 'timetable sollunga', 'exam eppo', 'feesu eppadi pay panrathu', 'tomorrow records submit pannanuma'), respond in warm, natural, friendly Tanglish (using Latin alphabet) to make it highly conversational and easy to understand.
+2. Directness: Keep your answers concise, well-structured, and easy to read. Use bullet points for schedules or course lists.
+3. Be reassuring, encouraging, and polite.
+
+Official Institutional Data (Provide answers ONLY based on this information):
+- UG Courses: B.A Tamil, B.A English, B.Sc Computer Science, B.Sc Chemistry, B.Sc Mathematics, B.Sc Physics, B.C.A, B.Com, B.B.A.
+- PG Courses: M.A Tamil, M.A English, M.Sc Computer Science, M.Sc Chemistry, M.Sc Mathematics, M.Sc Physics, M.C.A, M.Com, M.B.A.
+- Admissions: Admissions for the 2026 batch are now open. Students should keep 10th and 12th mark sheets, transfer certificate, Aadhaar copy, community certificate if applicable, and passport-size photos ready. The admission help desk works from 9:30 AM to 4:30 PM on working days.
+- Semester Examinations: The last date for semester examination registration is June 25, 2026. Hall tickets are released approximately one week before the first exam. Note: Prior tuition fee clearance is mandatory to generate final hall tickets.
+- Fees & Installments: UG Arts and Commerce programs start from Rs. 18,000 per semester, UG Science and Computer programs from Rs. 24,000 per semester, and PG programs from Rs. 28,000 per semester. The second tuition fee installment payment window opens this coming Monday. Late fees may apply after the deadline.
+- Hostel: Separate hostel support is available for boys and girls. Hostel fee starts from Rs. 35,000 per year including room and basic amenities. Hostel office enquiry time is 10:00 AM to 4:00 PM.
+- Scholarships: First-generation, merit, community-based, and government scholarships are supported through the student welfare office. Students should keep income certificate, community certificate, and bank passbook copy ready.
+- Transport: College bus support covers Chennai, ECR, Mamallapuram, Kalpakkam, and nearby town routes. Transport enquiry timing is 9:00 AM to 5:00 PM on working days.
+- Office Timings: Admission Office - 9:30 AM to 4:30 PM, Exam Cell - 10:00 AM to 4:00 PM, Accounts Office - 9:30 AM to 3:30 PM, Student Welfare Desk - 10:00 AM to 4:30 PM.
+- Placement Support: Final-year students can attend aptitude training, resume workshops, and mock interviews through the placement cell. Placement guidance is available every Wednesday and Friday afternoon.
+- Contact Support: Admission Help Desk - 044-4000 2100, Exam Cell - 044-4000 2125, Accounts Office - 044-4000 2130, Student Welfare Desk - 044-4000 2145.
+- Official Department Timetables:
+  * B.Sc Computer Science: Monday - Programming in C and Mathematics; Tuesday - Data Structures and Digital Fundamentals; Wednesday - DBMS and Programming Lab; Thursday - Java and Web Technology; Friday - Lab Record Review and Aptitude.
+  * B.C.A: Monday - Programming Fundamentals and English; Tuesday - Database Concepts and Office Automation; Wednesday - Data Structures and Lab; Thursday - Web Design and Computer Networks; Friday - Mini Project Hour and Class Test.
+  * B.A Tamil: Monday - Sangam Literature and Tamil Grammar; Tuesday - Classical Poetry and Communication Tamil; Wednesday - Literary Criticism and Skill Course; Thursday - Translation Studies and Seminar; Friday - Internal Test and Department Activity.
+  * B.A English: Monday - Poetry and Grammar; Tuesday - Drama and Spoken English; Wednesday - Fiction and Language Lab; Thursday - Literary Criticism and Communication Skills; Friday - Seminar and Assignment Review.
+  * Other courses: Ask the student to mention their specific department, semester, or section to retrieve their precise routine.
+- Assignment Reminders: Active reminders are out for practical record submissions, seminar deadlines, and practical reviews. Encourage students to submit records before reviews.`;
+    const courseAliases = {
+      ba_tamil: ["b.a tamil", "ba tamil", "tamil literature", "tamil department", "தமிழ்", "தமிழ்த்துறை"],
+      ba_english: ["b.a english", "ba english", "english literature", "english department", "ஆங்கிலம்", "ஆங்கிலத்துறை"],
+      bsc_cs: ["b.sc computer science", "bsc computer science", "computer science", "cs", "c.s", "கணினி அறிவியல்"],
+      bsc_chemistry: ["b.sc chemistry", "bsc chemistry", "chemistry", "வேதியியல்"],
+      bsc_mathematics: ["b.sc mathematics", "bsc mathematics", "mathematics", "maths", "math", "கணிதம்"],
+      bsc_physics: ["b.sc physics", "bsc physics", "physics", "இயற்பியல்"],
+      bca: ["b.c.a", "bca"],
+      bcom: ["b.com", "bcom", "commerce", "காமர்ஸ்", "வணிகவியல்"],
+      bba: ["b.b.a", "bba", "business administration"],
+      ma_tamil: ["m.a tamil", "ma tamil", "pg tamil", "மா தமிழ்"],
+      ma_english: ["m.a english", "ma english", "pg english", "மா ஆங்கிலம்"],
+      msc_cs: ["m.sc computer science", "msc computer science", "pg computer science", "msc cs", "எம்.எஸ்்சி கணினி அறிவியல்"],
+      msc_chemistry: ["m.sc chemistry", "msc chemistry", "pg chemistry", "எம்.எஸ்்சி வேதியியல்"],
+      msc_mathematics: ["m.sc mathematics", "msc mathematics", "pg mathematics", "pg maths", "எம்.எஸ்்சி கணிதம்"],
+      msc_physics: ["m.sc physics", "msc physics", "pg physics", "எம்.எஸ்்சி இயற்பியல்"],
+      mca: ["m.c.a", "mca"],
+      mcom: ["m.com", "mcom"],
+      mba: ["m.b.a", "mba"]
+    };
+    const courseTimetables = {
+      en: {
+        ba_tamil: "B.A Tamil timetable: Monday - Sangam Literature and Tamil Grammar, Tuesday - Classical Poetry and Communication Tamil, Wednesday - Literary Criticism and Skill Course, Thursday - Translation Studies and Seminar, Friday - Internal Test and Department Activity.",
+        ba_english: "B.A English timetable: Monday - Poetry and Grammar, Tuesday - Drama and Spoken English, Wednesday - Fiction and Language Lab, Thursday - Literary Criticism and Communication Skills, Friday - Seminar and Assignment Review.",
+        bsc_cs: "B.Sc Computer Science timetable: Monday - Programming in C and Mathematics, Tuesday - Data Structures and Digital Fundamentals, Wednesday - DBMS and Programming Lab, Thursday - Java and Web Technology, Friday - Lab Record Review and Aptitude.",
+        bsc_chemistry: "B.Sc Chemistry timetable: Monday - Organic Chemistry and Allied Mathematics, Tuesday - Inorganic Chemistry and Practical Theory, Wednesday - Physical Chemistry and Chemistry Lab, Thursday - Environmental Chemistry and Analysis, Friday - Record Submission and Viva.",
+        bsc_mathematics: "B.Sc Mathematics timetable: Monday - Algebra and Calculus, Tuesday - Differential Equations and Statistics, Wednesday - Real Analysis and Mathematical Methods, Thursday - Operations Research and Practical Session, Friday - Tutorial and Problem Solving Hour.",
+        bsc_physics: "B.Sc Physics timetable: Monday - Mechanics and Mathematics for Physics, Tuesday - Optics and Electronics, Wednesday - Thermal Physics and Physics Lab, Thursday - Solid State Physics and Practical Discussion, Friday - Record Verification and Unit Test.",
+        bca: "B.C.A timetable: Monday - Programming Fundamentals and English, Tuesday - Database Concepts and Office Automation, Wednesday - Data Structures and Lab, Thursday - Web Design and Computer Networks, Friday - Mini Project Hour and Class Test.",
+        bcom: "B.Com timetable: Monday - Financial Accounting and Business Economics, Tuesday - Business Law and Banking, Wednesday - Corporate Accounting and Practical Session, Thursday - Marketing and Income Tax, Friday - Commerce Seminar and Assignment Review.",
+        bba: "B.B.A timetable: Monday - Principles of Management and Business Communication, Tuesday - Marketing Management and Accounting for Managers, Wednesday - Human Resource Management and Case Study, Thursday - Organizational Behaviour and Entrepreneurship, Friday - Presentation Hour and Internal Assessment.",
+        ma_tamil: "M.A Tamil timetable: Monday - Advanced Tamil Literature and Research Methodology, Tuesday - Folklore and Grammar Studies, Wednesday - Comparative Literature and Seminar, Thursday - Translation Practice and Elective, Friday - Dissertation Guidance.",
+        ma_english: "M.A English timetable: Monday - British Literature and Literary Theory, Tuesday - American Literature and Linguistics, Wednesday - Indian Writing in English and Seminar, Thursday - Research Writing and Elective Paper, Friday - Dissertation Work and Presentation.",
+        msc_cs: "M.Sc Computer Science timetable: Monday - Advanced Java and Data Mining, Tuesday - Cloud Computing and Research Methods, Wednesday - Machine Learning Lab and Software Engineering, Thursday - Big Data Analytics and Seminar, Friday - Project Development and Review.",
+        msc_chemistry: "M.Sc Chemistry timetable: Monday - Organic Reaction Mechanisms and Spectroscopy, Tuesday - Inorganic Chemistry and Research Techniques, Wednesday - Physical Chemistry and Advanced Lab, Thursday - Analytical Chemistry and Seminar, Friday - Project Review and Viva.",
+        msc_mathematics: "M.Sc Mathematics timetable: Monday - Abstract Algebra and Topology, Tuesday - Complex Analysis and Numerical Methods, Wednesday - Functional Analysis and Operations Research, Thursday - Mathematical Statistics and Seminar, Friday - Research Discussion and Test.",
+        msc_physics: "M.Sc Physics timetable: Monday - Quantum Mechanics and Electrodynamics, Tuesday - Solid State Physics and Electronics, Wednesday - Nuclear Physics and Advanced Lab, Thursday - Material Science and Seminar, Friday - Project Work and Viva Preparation.",
+        mca: "M.C.A timetable: Monday - Advanced Programming and Data Structures, Tuesday - Software Engineering and Database Administration, Wednesday - Mobile Computing and Lab, Thursday - Cloud Applications and Mini Project, Friday - Technical Seminar and Coding Assessment.",
+        mcom: "M.Com timetable: Monday - Advanced Corporate Accounting and Managerial Economics, Tuesday - Banking Theory and Research Methodology, Wednesday - Marketing Analytics and Practical Session, Thursday - Financial Management and Tax Planning, Friday - Seminar and Project Guidance.",
+        mba: "M.B.A timetable: Monday - Strategic Management and Managerial Communication, Tuesday - Financial Management and HR Analytics, Wednesday - Marketing Strategy and Business Analytics, Thursday - Operations Management and Case Discussion, Friday - Project Review and Industry Interaction."
+      },
+      ta: {
+        ba_tamil: "பி.ஏ தமிழ் காலஅட்டவணை: திங்கள் - சங்க இலக்கியம் மற்றும் தமிழ் இலக்கணம், செவ்வாய் - பாரம்பரியக் கவிதை மற்றும் தொடர்புத்தமிழ், புதன் - இலக்கிய விமர்சனம் மற்றும் திறன் பாடம், வியாழன் - மொழிபெயர்ப்பியல் மற்றும் செமினார், வெள்ளி - உள்தேர்வு மற்றும் துறை செயல்பாடு.",
+        ba_english: "பி.ஏ ஆங்கிலம் காலஅட்டவணை: திங்கள் - கவிதை மற்றும் இலக்கணம், செவ்வாய் - நாடகம் மற்றும் பேசு ஆங்கிலம், புதன் - புதினம் மற்றும் மொழி ஆய்வகம், வியாழன் - இலக்கிய விமர்சனம் மற்றும் தொடர்புத் திறன், வெள்ளி - செமினார் மற்றும் அசைன்மென்ட் மதிப்பாய்வு.",
+        bsc_cs: "பி.எஸ்்சி கணினி அறிவியல் காலஅட்டவணை: திங்கள் - C நிரலாக்கம் மற்றும் கணிதம், செவ்வாய் - தரவுக்கட்டமைப்பு மற்றும் டிஜிட்டல் அடிப்படை, புதன் - DBMS மற்றும் நிரலாக்க ஆய்வகம், வியாழன் - ஜாவா மற்றும் வலைத்தொழில்நுட்பம், வெள்ளி - லாப் ரெக்கார்ட் மதிப்பாய்வு மற்றும் திறன் பயிற்சி.",
+        bsc_chemistry: "பி.எஸ்்சி வேதியியல் காலஅட்டவணை: திங்கள் - கார்பனிக் வேதியியல் மற்றும் துணை கணிதம், செவ்வாய் - அகர வேதியியல் மற்றும் செயல்முறை கோட்பாடு, புதன் - இயற்பியல் வேதியியல் மற்றும் ஆய்வகம், வியாழன் - சுற்றுச்சூழல் வேதியியல் மற்றும் பகுப்பாய்வு, வெள்ளி - ரெக்கார்ட் சமர்ப்பிப்பு மற்றும் வாய்மொழி.",
+        bsc_mathematics: "பி.எஸ்்சி கணிதம் காலஅட்டவணை: திங்கள் - அல்ஜீப்ரா மற்றும் கல்குலஸ், செவ்வாய் - வேறுபாட்டுச் சமன்பாடுகள் மற்றும் புள்ளியியல், புதன் - ரியல் அனாலிசிஸ் மற்றும் கணித முறைகள், வியாழன் - ஆப்பரேஷன்ஸ் ரிசர்ச் மற்றும் பயிற்சி நேரம், வெள்ளி - டுடோரியல் மற்றும் பிரச்சினை தீர்வு மணி.",
+        bsc_physics: "பி.எஸ்்சி இயற்பியல் காலஅட்டவணை: திங்கள் - இயந்திரவியல் மற்றும் துணை கணிதம், செவ்வாய் - ஒளியியல் மற்றும் மின்தொழில்நுட்பம், புதன் - வெப்ப இயற்பியல் மற்றும் இயற்பியல் ஆய்வகம், வியாழன் - திண்ம நிலை இயற்பியல் மற்றும் செயல்முறை விவாதம், வெள்ளி - ரெக்கார்ட் சரிபார்ப்பு மற்றும் யூனிட் தேர்வு.",
+        bca: "பி.சி.ஏ காலஅட்டவணை: திங்கள் - நிரலாக்க அடிப்படை மற்றும் ஆங்கிலம், செவ்வாய் - தரவுத்தளக் கருத்துகள் மற்றும் அலுவலக தானியக்கம், புதன் - தரவுக்கட்டமைப்பு மற்றும் ஆய்வகம், வியாழன் - வலை வடிவமைப்பு மற்றும் கணினி வலைப்பின்னல், வெள்ளி - மினி ப்ராஜெக்ட் மற்றும் வகுப்பு தேர்வு.",
+        bcom: "பி.காம் காலஅட்டவணை: திங்கள் - நிதிக் கணக்கியல் மற்றும் வணிகப் பொருளாதாரம், செவ்வாய் - வணிக சட்டம் மற்றும் வங்கியியல், புதன் - கார்ப்பரேட் கணக்கியல் மற்றும் பயிற்சி நேரம், வியாழன் - மார்க்கெட்டிங் மற்றும் வருமானவரி, வெள்ளி - காமர்ஸ் செமினார் மற்றும் அசைன்மென்ட் மதிப்பாய்வு.",
+        bba: "பி.பி.ஏ காலஅட்டவணை: திங்கள் - மேலாண்மை கொள்கைகள் மற்றும் வணிக தொடர்பு, செவ்வாய் - மார்க்கெட்டிங் மேலாண்மை மற்றும் மேலாளர்களுக்கான கணக்கியல், புதன் - மனிதவள மேலாண்மை மற்றும் கேஸ் ஸ்டடி, வியாழன் - நிறுவன நடத்தைகள் மற்றும் தொழில் முனைவு, வெள்ளி - வழங்கல் நேரம் மற்றும் உள்மதிப்பீடு.",
+        ma_tamil: "எம்.ஏ தமிழ் காலஅட்டவணை: திங்கள் - மேம்பட்ட தமிழ் இலக்கியம் மற்றும் ஆராய்ச்சி முறைகள், செவ்வாய் - நாட்டுப்புறவியல் மற்றும் இலக்கண ஆய்வு, புதன் - ஒப்பீட்டு இலக்கியம் மற்றும் செமினார், வியாழன் - மொழிபெயர்ப்பு பயிற்சி மற்றும் தேர்வுப் பாடம், வெள்ளி - ஆய்வறிக்கை வழிகாட்டல்.",
+        ma_english: "எம்.ஏ ஆங்கிலம் காலஅட்டவணை: திங்கள் - பிரிட்டிஷ் இலக்கியம் மற்றும் இலக்கியக் கோட்பாடு, செவ்வாய் - அமெரிக்க இலக்கியம் மற்றும் மொழியியல், புதன் - இந்திய ஆங்கில எழுத்து மற்றும் செமினார், வியாழன் - ஆராய்ச்சி எழுதுதல் மற்றும் தேர்வுப் பாடம், வெள்ளி - ஆய்வறிக்கைப் பணி மற்றும் வழங்கல்.",
+        msc_cs: "எம்.எஸ்்சி கணினி அறிவியல் காலஅட்டவணை: திங்கள் - மேம்பட்ட ஜாவா மற்றும் டேட்டா மைனிங், செவ்வாய் - கிளவுட் கம்ப்யூட்டிங் மற்றும் ஆராய்ச்சி முறைகள், புதன் - மெஷின் லெர்னிங் ஆய்வகம் மற்றும் சாப்ட்வேர் என்ஜினியரிங், வியாழன் - பிக் டேட்டா அனலிட்டிக்ஸ் மற்றும் செமினார், வெள்ளி - ப்ராஜெக்ட் டெவலப்மெண்ட் மற்றும் மதிப்பாய்வு.",
+        msc_chemistry: "எம்.எஸ்்சி வேதியியல் காலஅட்டவணை: திங்கள் - ஆர்கானிக் ரியாக்ஷன் மெக்கானிசம் மற்றும் ஸ்பெக்ட்ரோஸ்கோபி, செவ்வாய் - அகர வேதியியல் மற்றும் ஆராய்ச்சி நுட்பங்கள், புதன் - இயற்பியல் வேதியியல் மற்றும் மேம்பட்ட ஆய்வகம், வியாழன் - பகுப்பாய்வு வேதியியல் மற்றும் செமினார், வெள்ளி - ப்ராஜெக்ட் மதிப்பாய்வு மற்றும் வாய்மொழி.",
+        msc_mathematics: "எம்.எஸ்்சி கணிதம் காலஅட்டவணை: திங்கள் - அப்ஸ்ட்ராக்ட் அல்ஜீப்ரா மற்றும் டோபாலஜி, செவ்வாய் - காம்ப்ளெக்ஸ் அனாலிசிஸ் மற்றும் எண்கணித முறைகள், புதன் - பங்க்ஷனல் அனாலிசிஸ் மற்றும் ஆப்பரேஷன்ஸ் ரிசர்ச், வியாழன் - புள்ளியியல் கணிதம் மற்றும் செமினார், வெள்ளி - ஆராய்ச்சி விவாதம் மற்றும் தேர்வு.",
+        msc_physics: "எம்.எஸ்்சி இயற்பியல் காலஅட்டவணை: திங்கள் - குவாண்டம் மெக்கானிக்ஸ் மற்றும் எலக்ட்ரோடைநமிக்ஸ், செவ்வாய் - திண்மநிலை இயற்பியல் மற்றும் மின்னியல், புதன் - அணு இயற்பியல் மற்றும் மேம்பட்ட ஆய்வகம், வியாழன் - மெட்டீரியல் சயின்ஸ் மற்றும் செமினார், வெள்ளி - ப்ராஜெக்ட் பணி மற்றும் வாய்மொழி தயார்ப்பு.",
+        mca: "எம்.சி.ஏ காலஅட்டவணை: திங்கள் - மேம்பட்ட நிரலாக்கம் மற்றும் தரவுக்கட்டமைப்பு, செவ்வாய் - சாப்ட்வேர் என்ஜினியரிங் மற்றும் தரவுத்தள நிர்வாகம், புதன் - மொபைல் கம்ப்யூட்டிங் மற்றும் ஆய்வகம், வியாழன் - கிளவுட் அப்ளிகேஷன்கள் மற்றும் மினி ப்ராஜெக்ட், வெள்ளி - தொழில்நுட்ப செமினார் மற்றும் குறிமுறை மதிப்பீடு.",
+        mcom: "எம்.காம் காலஅட்டவணை: திங்கள் - மேம்பட்ட கார்ப்பரேட் கணக்கியல் மற்றும் மேலாண்மை பொருளாதாரம், செவ்வாய் - வங்கியியல் கோட்பாடு மற்றும் ஆராய்ச்சி முறைகள், புதன் - மார்க்கெட்டிங் அனலிட்டிக்ஸ் மற்றும் பயிற்சி நேரம், வியாழன் - நிதி மேலாண்மை மற்றும் வரி திட்டமிடல், வெள்ளி - செமினார் மற்றும் ப்ராஜெக்ட் வழிகாட்டல்.",
+        mba: "எம்.பி.ஏ காலஅட்டவணை: திங்கள் - மூலோபாய மேலாண்மை மற்றும் மேலாண்மை தொடர்பு, செவ்வாய் - நிதி மேலாண்மை மற்றும் HR அனலிட்டிக்ஸ், புதன் - மார்க்கெட்டிங் ஸ்ட்ராட்டஜி மற்றும் பிஸினஸ் அனலிட்டிக்ஸ், வியாழன் - ஆப்பரேஷன்ஸ் மேனேஜ்மெண்ட் மற்றும் கேஸ் விவாதம், வெள்ளி - ப்ராஜெக்ட் மதிப்பாய்வு மற்றும் தொழில் தொடர்பு."
+      }
+    };
+    const courseTimetablesTanglish = {
+      ba_tamil: "B.A Tamil timetable: Monday la Sangam Literature, Tuesday la Classical Poetry, Wednesday la Literary Criticism, Thursday la Translation Studies, Friday la Internal Test and department activity irukku.",
+      ba_english: "B.A English timetable: Monday la Poetry and Grammar, Tuesday la Drama and Spoken English, Wednesday la Fiction and Language Lab, Thursday la Literary Criticism, Friday la Seminar and assignment review irukku.",
+      bsc_cs: "B.Sc Computer Science timetable: Monday la Programming in C and Maths, Tuesday la Data Structures, Wednesday la DBMS and lab, Thursday la Java and Web Technology, Friday la Lab record review irukku.",
+      bsc_chemistry: "B.Sc Chemistry timetable: Monday la Organic Chemistry, Tuesday la Inorganic Chemistry, Wednesday la Physical Chemistry and lab, Thursday la Environmental Chemistry, Friday la Record submission and viva irukku.",
+      bsc_mathematics: "B.Sc Mathematics timetable: Monday la Algebra and Calculus, Tuesday la Differential Equations and Statistics, Wednesday la Real Analysis, Thursday la Operations Research, Friday la Tutorial and problem solving irukku.",
+      bsc_physics: "B.Sc Physics timetable: Monday la Mechanics, Tuesday la Optics and Electronics, Wednesday la Thermal Physics and lab, Thursday la Solid State Physics, Friday la Record verification and unit test irukku.",
+      bca: "B.C.A timetable: Monday la Programming Fundamentals, Tuesday la Database Concepts, Wednesday la Data Structures and lab, Thursday la Web Design and Networks, Friday la Mini Project hour irukku.",
+      bcom: "B.Com timetable: Monday la Financial Accounting, Tuesday la Business Law and Banking, Wednesday la Corporate Accounting, Thursday la Marketing and Income Tax, Friday la Seminar and assignment review irukku.",
+      bba: "B.B.A timetable: Monday la Principles of Management, Tuesday la Marketing Management, Wednesday la HR Management, Thursday la Organizational Behaviour, Friday la Presentation and internal assessment irukku.",
+      ma_tamil: "M.A Tamil timetable: Monday la Advanced Tamil Literature, Tuesday la Folklore, Wednesday la Comparative Literature, Thursday la Translation Practice, Friday la Dissertation guidance irukku.",
+      ma_english: "M.A English timetable: Monday la British Literature, Tuesday la American Literature and Linguistics, Wednesday la Indian Writing in English, Thursday la Research Writing, Friday la Dissertation work irukku.",
+      msc_cs: "M.Sc Computer Science timetable: Monday la Advanced Java, Tuesday la Cloud Computing, Wednesday la Machine Learning lab, Thursday la Big Data Analytics, Friday la Project review irukku.",
+      msc_chemistry: "M.Sc Chemistry timetable: Monday la Organic Reaction Mechanisms, Tuesday la Inorganic Chemistry, Wednesday la Physical Chemistry and lab, Thursday la Analytical Chemistry, Friday la Project review irukku.",
+      msc_mathematics: "M.Sc Mathematics timetable: Monday la Abstract Algebra, Tuesday la Complex Analysis, Wednesday la Functional Analysis, Thursday la Mathematical Statistics, Friday la Research discussion irukku.",
+      msc_physics: "M.Sc Physics timetable: Monday la Quantum Mechanics, Tuesday la Solid State Physics, Wednesday la Nuclear Physics and lab, Thursday la Material Science, Friday la Project work irukku.",
+      mca: "M.C.A timetable: Monday la Advanced Programming, Tuesday la Software Engineering, Wednesday la Mobile Computing and lab, Thursday la Cloud Applications, Friday la Technical seminar irukku.",
+      mcom: "M.Com timetable: Monday la Advanced Corporate Accounting, Tuesday la Banking Theory, Wednesday la Marketing Analytics, Thursday la Financial Management, Friday la Seminar and project guidance irukku.",
+      mba: "M.B.A timetable: Monday la Strategic Management, Tuesday la Financial Management and HR Analytics, Wednesday la Marketing Strategy, Thursday la Operations Management, Friday la Project review and industry interaction irukku."
+    };
+    function getSuggestionQuestions() {
+      return currentLanguage === "ta"
+        ? [
+            "என்னென்ன UG மற்றும் PG பாடநெறிகள் உள்ளன?",
+            "ஹால் டிக்கெட் எப்போது வெளியிடப்படும்?",
+            "கட்டணம் செலுத்த கடைசி தேதி எது?",
+            "இன்றைய காலஅட்டவணை என்ன?",
+            "இந்த வார நினைவூட்டல்கள் உள்ளனவா?",
+            "தமிழில் கேட்கலாமா?"
+          ]
+        : [
+            "What UG and PG courses are available?",
+            "When are hall tickets released?",
+            "What is the fee payment deadline?",
+            "Show today's timetable.",
+            "Any reminders for this week?",
+            "Can I ask in Tamil or Tanglish?"
+          ];
+    }
+    function renderSuggestions() {
+      const questions = getSuggestionQuestions();
+      const labels = [copy[currentLanguage].chip1, copy[currentLanguage].chip2, copy[currentLanguage].chip3, copy[currentLanguage].chip4, copy[currentLanguage].chip5, copy[currentLanguage].chip6];
+      const wrapper = document.createElement("div");
+      wrapper.className = "chat-suggestions";
+      wrapper.id = "chatSuggestions";
+      labels.forEach((label, index) => {
+        const button = document.createElement("button");
+        button.className = "suggestion-chip";
+        button.type = "button";
+        button.dataset.question = questions[index];
+        button.textContent = label;
+        wrapper.appendChild(button);
+      });
+      chatFeed.appendChild(wrapper);
+    }
+    let typingIndicatorEl = null;
+    const chatHistory = [];
+
+    function showTypingIndicator() {
+      if (typingIndicatorEl) return;
+      const wrap = document.createElement("div");
+      wrap.className = "bubble-wrap bot typing-wrap";
+      const bubble = document.createElement("div");
+      bubble.className = "bubble bot typing-indicator";
+      bubble.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      wrap.appendChild(bubble);
+      chatFeed.appendChild(wrap);
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+      typingIndicatorEl = wrap;
+    }
+
+    function hideTypingIndicator() {
+      if (typingIndicatorEl) {
+        typingIndicatorEl.remove();
+        typingIndicatorEl = null;
+      }
+    }
+
+    function setText(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }
+    function addBubble(text, type) {
+      const wrap = document.createElement("div");
+      wrap.className = `bubble-wrap ${type}`;
+      const bubble = document.createElement("div");
+      bubble.className = `bubble ${type}`;
+      bubble.textContent = text;
+      wrap.appendChild(bubble);
+
+      if (type === "bot") {
+        const reactions = document.createElement("div");
+        reactions.className = "bubble-reactions";
+        ["👍", "❤️", "🎓", "👏"].forEach((emoji) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "reaction-btn";
+          button.dataset.emoji = emoji;
+          button.textContent = emoji;
+          reactions.appendChild(button);
+        });
+        wrap.appendChild(reactions);
+      }
+
+      chatFeed.appendChild(wrap);
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+        function seedChat() {
+      chatFeed.innerHTML = "";
+      renderSuggestions();
+      addBubble(copy[currentLanguage].welcome1, "bot");
+      addBubble(copy[currentLanguage].welcome2, "bot");
+      
+      const localApiKey = localStorage.getItem("unimitra_openai_key");
+      if (!localApiKey) {
+        if (location.protocol === "file:") {
+          addBubble(currentLanguage === "ta" 
+            ? "⚠️ நேரடி AI அரட்டையை இயக்க, மேலே உள்ள ⚙️ அமைப்புகள் ஐகானைக் கிளிக் செய்து உங்கள் OpenAI API கீயை உள்ளிடவும். (தற்போது ஆஃப்லைன் பயன்முறையில் இயங்குகிறது)"
+            : "⚠️ To enable real-time AI chat, click the ⚙️ settings icon above and enter your OpenAI API key. (Currently running in Offline Mode)", "bot");
+        } else {
+          addBubble(currentLanguage === "ta"
+            ? "💡 உண்மையான AI அரட்டையைப் பெற, மேலே உள்ள ⚙️ அமைப்புகளைக் கிளிக் செய்து உங்கள் OpenAI API கீயை உள்ளிடவும், அல்லது உங்கள் சர்வரில் .env கோப்பில் API கீயை உள்ளமைக்கவும்."
+            : "💡 To get real AI responses, click the ⚙️ settings icon above to enter your OpenAI API key, or configure the API key in the .env file on your server.", "bot");
+        }
+      }
+    }
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      ids.forEach((id) => setText(id, copy[lang][id]));
+      chatInput.placeholder = copy[lang].chatInputPlaceholder;
+      voiceStatusText.textContent = (SpeechRecognition || navigator.mediaDevices) ? copy[lang].voiceReady : copy[lang].voiceUnsupported;
+      langEnglish.classList.toggle("active", lang === "en");
+      langTamil.classList.toggle("active", lang === "ta");
+      document.documentElement.lang = lang === "ta" ? "ta" : "en";
+      seedChat();
+    }
+    function openChat() { chatWidget.classList.add("open"); }
+    function closeChat() { chatWidget.classList.remove("open"); }
+    function setVoiceStatus(message) { voiceStatusText.textContent = message; }
+    
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let currentStream = null;
+    let voiceAutoStopTimer = null;
+
+    function stopVoiceUi() {
+      isListening = false;
+      voiceStart.classList.remove("listening");
+      if (voiceAutoStopTimer) {
+        clearTimeout(voiceAutoStopTimer);
+        voiceAutoStopTimer = null;
+      }
+    }
+
+    function stopCurrentStream() {
+      if (currentStream) {
+        currentStream.getTracks().forEach((track) => track.stop());
+        currentStream = null;
+      }
+    }
+
+    function speechLang() {
+      return currentLanguage === "ta" ? "ta-IN" : "en-IN";
+    }
+
+    async function transcribeAudioBlob(audioBlob) {
+      const localApiKey = localStorage.getItem("unimitra_openai_key");
+
+      if (localApiKey) {
+        const formData = new FormData();
+        formData.append("model", "whisper-1");
+        formData.append("language", currentLanguage === "ta" ? "ta" : "en");
+        formData.append("response_format", "json");
+        formData.append("file", audioBlob, "voice-input.webm");
+
+        const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${localApiKey}`
+          },
+          body: formData
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.error?.message || "Direct Whisper transcription failed");
+        }
+        return (data.text || "").trim();
+      }
+
+      if (location.protocol !== "file:") {
+        const response = await fetch(`/api/transcribe?lang=${currentLanguage === "ta" ? "ta" : "en"}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": audioBlob.type || "audio/webm"
+          },
+          body: audioBlob
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data?.error || "Transcription failed");
+        }
+        return (data.text || "").trim();
+      }
+
+      throw new Error("Hosted transcription unavailable");
+    }
+
+    function submitTranscript(transcript) {
+      const cleanTranscript = (transcript || "").trim();
+      if (!cleanTranscript) {
+        setVoiceStatus(copy[currentLanguage].voiceNoSpeech);
+        return;
+      }
+      chatInput.value = cleanTranscript;
+      setVoiceStatus(copy[currentLanguage].voiceDetected);
+      submitMessage(cleanTranscript);
+    }
+
+    function startBrowserSpeechRecognition() {
+      if (!SpeechRecognition) {
+        setVoiceStatus(copy[currentLanguage].voiceUnsupported);
+        return;
+      }
+
+      if (!recognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+
+        recognition.addEventListener("start", () => {
+          isListening = true;
+          voiceStart.classList.add("listening");
+          setVoiceStatus(copy[currentLanguage].voiceListening);
+        });
+
+        recognition.addEventListener("result", (event) => {
+          const parts = [];
+          for (let i = event.resultIndex; i < event.results.length; i += 1) {
+            const piece = event.results[i]?.[0]?.transcript || "";
+            if (piece) parts.push(piece);
+          }
+          const transcript = parts.join(" ").trim();
+          if (transcript) {
+            chatInput.value = transcript;
+          }
+
+          const latestResult = event.results[event.results.length - 1];
+          if (latestResult?.isFinal && transcript) {
+            stopVoiceUi();
+            submitTranscript(transcript);
+          }
+        });
+
+        recognition.addEventListener("error", (event) => {
+          stopVoiceUi();
+          if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+            setVoiceStatus("Microphone permission denied. Please allow mic access.");
+            return;
+          }
+          if (event.error === "no-speech") {
+            setVoiceStatus(copy[currentLanguage].voiceNoSpeech);
+            return;
+          }
+          setVoiceStatus("Voice recognition failed. Trying another method may help.");
+        });
+
+        recognition.addEventListener("end", () => {
+          if (isListening) {
+            stopVoiceUi();
+            if (!chatInput.value.trim()) {
+              setVoiceStatus(copy[currentLanguage].voiceNoSpeech);
+            }
+          } else if (!chatInput.value.trim()) {
+            setVoiceStatus(copy[currentLanguage].voiceReady);
+          }
+        });
+      }
+
+      recognition.lang = speechLang();
+      recognition.start();
+    }
+
+    async function startRecordedVoiceInput() {
+      if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder)) {
+        throw new Error("Recorder unsupported");
+      }
+
+      currentStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunks = [];
+      mediaRecorder = new MediaRecorder(currentStream, { mimeType: "audio/webm" });
+
+      mediaRecorder.addEventListener("dataavailable", (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunks.push(event.data);
+        }
+      });
+
+      mediaRecorder.addEventListener("stop", async () => {
+        stopVoiceUi();
+        const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+        stopCurrentStream();
+
+        if (!audioBlob.size) {
+          setVoiceStatus(copy[currentLanguage].voiceNoSpeech);
+          return;
+        }
+
+        try {
+          setVoiceStatus("Processing your voice...");
+          const transcript = await transcribeAudioBlob(audioBlob);
+          submitTranscript(transcript);
+        } catch (error) {
+          console.warn("Recorded voice transcription failed:", error);
+          if (SpeechRecognition) {
+            setVoiceStatus("Recorded transcription failed. Switching to browser voice...");
+            startBrowserSpeechRecognition();
+            return;
+          }
+          setVoiceStatus("Voice transcription failed. Add API key or use supported browser.");
+        }
+      });
+
+      mediaRecorder.start();
+      isListening = true;
+      voiceStart.classList.add("listening");
+      setVoiceStatus("Recording... tap mic again to stop.");
+      voiceAutoStopTimer = setTimeout(() => {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
+      }, 6000);
+    }
+
+    async function handleVoiceClick() {
+      openChat();
+
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        return;
+      }
+
+      if (isListening && recognition) {
+        recognition.stop();
+        return;
+      }
+
+      const localApiKey = localStorage.getItem("unimitra_openai_key");
+      const preferRecordedMode = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) &&
+        (location.protocol !== "file:" || !!localApiKey);
+
+      try {
+        if (preferRecordedMode) {
+          await startRecordedVoiceInput();
+        } else if (SpeechRecognition) {
+          startBrowserSpeechRecognition();
+        } else {
+          await startRecordedVoiceInput();
+        }
+      } catch (error) {
+        console.warn("Voice start failed:", error);
+        stopVoiceUi();
+        stopCurrentStream();
+        if (SpeechRecognition) {
+          try {
+            startBrowserSpeechRecognition();
+            return;
+          } catch (fallbackError) {
+            console.warn("Speech fallback failed:", fallbackError);
+          }
+        }
+        setVoiceStatus("Voice input could not start. Check microphone permission.");
+      }
+    }
+
+    function initVoiceInput() {
+      if (!SpeechRecognition && !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder)) {
+        voiceStart.disabled = true;
+        setVoiceStatus(copy[currentLanguage].voiceUnsupported);
+        return;
+      }
+
+      voiceStart.disabled = false;
+      voiceStart.addEventListener("click", handleVoiceClick);
+    }
+    function needsHostedPage() { return location.protocol === "file:"; }
+    function isTamilScript(text) { return /[\u0B80-\u0BFF]/.test(text); }
+    function isTanglish(text) {
+      const t = text.toLowerCase().trim();
+      const tanglishKeywords = [
+        "padippu","courseu","courses","thervu","exam iruka","feesu","fees","kattanam","hall ticket",
+        "attavanai","naalaiku","assignment","reminder","venum","iruka","irukku","enna","epdi","eppo",
+        "sollu","sollunga","unga","detail","details","kudunga","venam","enga","inniku","naalaiku",
+        "class","semester","department","timetable","schedule","ethu","enna course","enna fees"
+      ];
+      const romanTamilPattern = /\b(enna|epdi|eppo|iruka|irukku|venum|sollu|kudunga|naalaiku|inniku|unga|namma|ethu|illaya)\b/;
+      return tanglishKeywords.some((word) => t.includes(word)) || romanTamilPattern.test(t);
+    }
+    function replyLanguage(message) {
+      if (isTamilScript(message)) return "ta";
+      if (isTanglish(message)) return "tg";
+      return "en";
+    }
+    function detectCourse(message) {
+      const value = message.toLowerCase();
+      for (const [courseKey, aliases] of Object.entries(courseAliases)) {
+        if (aliases.some((alias) => value.includes(alias.toLowerCase()))) return courseKey;
+      }
+      return null;
+    }
+    function category(message) {
+      const value = message.toLowerCase();
+      if (value.includes("course") || value.includes("program") || value.includes("department") || value.includes("padippu") || value.includes("degree") || value.includes("ug") || value.includes("pg") || value.includes("பாட") || value.includes("படிப்பு")) return "courses";
+      if (value.includes("exam") || value.includes("hall ticket") || value.includes("hallticket") || value.includes("hall") || value.includes("internal") || value.includes("semester") || value.includes("thervu") || value.includes("தேர்வு") || value.includes("ஹால்")) return "exams";
+      if (value.includes("fee") || value.includes("payment") || value.includes("installment") || value.includes("feesu") || value.includes("kattanam") || value.includes("balance") || value.includes("due") || value.includes("கட்டண")) return "fees";
+      if (value.includes("timetable") || value.includes("time table") || value.includes("schedule") || value.includes("class time") || value.includes("routine") || value.includes("attavanai") || value.includes("காலஅட்டவணை") || value.includes("அட்டவணை")) return "timetable";
+      if (value.includes("assignment") || value.includes("reminder") || value.includes("submission") || value.includes("alert") || value.includes("due date") || value.includes("ஒப்படைப்பு") || value.includes("நினைவூட்டல்")) return "reminders";
+      return "default";
+    }
+    function botReply(message) {
+      const lang = replyLanguage(message);
+      const topic = category(message);
+      const courseKey = detectCourse(message);
+      if (topic === "courses") return copy[lang].replyCourses;
+      if (topic === "exams") return copy[lang].replyExams;
+      if (topic === "fees") return copy[lang].replyFees;
+      if (topic === "timetable" && courseKey) return lang === "tg" ? courseTimetablesTanglish[courseKey] : courseTimetables[lang][courseKey];
+      if (topic === "timetable") return copy[lang].replyTimetable;
+      if (topic === "reminders") return copy[lang].replyReminders;
+      return copy[lang].replyDefault;
+    }
+    function category(message) {
+      const value = message.toLowerCase();
+      if (value.includes("course") || value.includes("program") || value.includes("department") || value.includes("padippu") || value.includes("degree") || value.includes("ug") || value.includes("pg") || value.includes("à®ªà®¾à®Ÿ") || value.includes("à®ªà®Ÿà®¿à®ªà¯à®ªà¯")) return "courses";
+      if (value.includes("admission") || value.includes("apply") || value.includes("application") || value.includes("eligibility") || value.includes("document") || value.includes("join") || value.includes("serkkai") || value.includes("admission open") || value.includes("à®šà¯‡à®°à¯à®•à¯à®•à¯ˆ")) return "admission";
+      if (value.includes("exam") || value.includes("hall ticket") || value.includes("hallticket") || value.includes("hall") || value.includes("internal") || value.includes("semester") || value.includes("thervu") || value.includes("à®¤à¯‡à®°à¯à®µà¯") || value.includes("à®¹à®¾à®²à¯")) return "exams";
+      if (value.includes("fee") || value.includes("payment") || value.includes("installment") || value.includes("feesu") || value.includes("kattanam") || value.includes("balance") || value.includes("due") || value.includes("à®•à®Ÿà¯à®Ÿà®£")) return "fees";
+      if (value.includes("timetable") || value.includes("time table") || value.includes("schedule") || value.includes("class time") || value.includes("routine") || value.includes("attavanai") || value.includes("à®•à®¾à®²à®…à®Ÿà¯à®Ÿà®µà®£à¯ˆ") || value.includes("à®…à®Ÿà¯à®Ÿà®µà®£à¯ˆ")) return "timetable";
+      if (value.includes("assignment") || value.includes("reminder") || value.includes("submission") || value.includes("alert") || value.includes("due date") || value.includes("à®’à®ªà¯à®ªà®Ÿà¯ˆà®ªà¯à®ªà¯") || value.includes("à®¨à®¿à®©à¯ˆà®µà¯‚à®Ÿà¯à®Ÿà®²à¯")) return "reminders";
+      if (value.includes("hostel") || value.includes("room") || value.includes("stay") || value.includes("accommodation") || value.includes("viduthi") || value.includes("à®µà®¿à®Ÿà¯à®¤à®¿")) return "hostel";
+      if (value.includes("scholarship") || value.includes("scholar") || value.includes("financial aid") || value.includes("first graduate") || value.includes("udhavithogai") || value.includes("à®‰à®¤à®µà®¿à®¤à¯à®¤à¯Šà®•à¯ˆ")) return "scholarship";
+      if (value.includes("transport") || value.includes("bus") || value.includes("route") || value.includes("pickup") || value.includes("drop") || value.includes("à®ªà¯‹à®•à¯à®•à¯à®µà®°à®¤à¯à®¤à¯")) return "transport";
+      if (value.includes("office time") || value.includes("office timing") || value.includes("office hour") || value.includes("working hour") || value.includes("office open") || value.includes("aluvagam") || value.includes("à®…à®²à¯à®µà®²à®•à®®à¯")) return "office";
+      if (value.includes("placement") || value.includes("job") || value.includes("career") || value.includes("campus interview") || value.includes("recruitment")) return "placement";
+      if (value.includes("contact") || value.includes("phone") || value.includes("number") || value.includes("call") || value.includes("help desk") || value.includes("enquiry")) return "contact";
+      return "default";
+    }
+    function botReply(message) {
+      const lang = replyLanguage(message);
+      const topic = category(message);
+      const courseKey = detectCourse(message);
+      if (topic === "courses") return copy[lang].replyCourses;
+      if (topic === "admission") return copy[lang].replyAdmission;
+      if (topic === "exams") return copy[lang].replyExams;
+      if (topic === "fees") return copy[lang].replyFees;
+      if (topic === "timetable" && courseKey) return lang === "tg" ? courseTimetablesTanglish[courseKey] : courseTimetables[lang][courseKey];
+      if (topic === "timetable") return copy[lang].replyTimetable;
+      if (topic === "reminders") return copy[lang].replyReminders;
+      if (topic === "hostel") return copy[lang].replyHostel;
+      if (topic === "scholarship") return copy[lang].replyScholarship;
+      if (topic === "transport") return copy[lang].replyTransport;
+      if (topic === "office") return copy[lang].replyOffice;
+      if (topic === "placement") return copy[lang].replyPlacement;
+      if (topic === "contact") return copy[lang].replyContact;
+      return copy[lang].replyDefault;
+    }
+    function category(message) {
+      const value = message.toLowerCase();
+      if (value.includes("course") || value.includes("program") || value.includes("department") || value.includes("padippu") || value.includes("degree") || value.includes("ug") || value.includes("pg") || value.includes("\u0baa\u0bbe\u0b9f") || value.includes("\u0baa\u0b9f\u0bbf\u0baa\u0bcd\u0baa\u0bc1")) return "courses";
+      if (value.includes("admission") || value.includes("apply") || value.includes("application") || value.includes("eligibility") || value.includes("document") || value.includes("join") || value.includes("serkkai") || value.includes("admission open") || value.includes("\u0b9a\u0bc7\u0bb0\u0bcd\u0b95\u0bcd\u0b95\u0bc8")) return "admission";
+      if (value.includes("exam") || value.includes("hall ticket") || value.includes("hallticket") || value.includes("hall") || value.includes("internal") || value.includes("semester") || value.includes("thervu") || value.includes("\u0ba4\u0bc7\u0bb0\u0bcd\u0bb5\u0bc1") || value.includes("\u0bb9\u0bbe\u0bb2\u0bcd")) return "exams";
+      if (value.includes("fee") || value.includes("payment") || value.includes("installment") || value.includes("feesu") || value.includes("kattanam") || value.includes("balance") || value.includes("due") || value.includes("\u0b95\u0b9f\u0bcd\u0b9f\u0ba3\u0bae\u0bcd")) return "fees";
+      if (value.includes("timetable") || value.includes("time table") || value.includes("schedule") || value.includes("class time") || value.includes("routine") || value.includes("attavanai") || value.includes("\u0b95\u0bbe\u0bb2\u0b85\u0b9f\u0bcd\u0b9f\u0bb5\u0ba3\u0bc8") || value.includes("\u0b85\u0b9f\u0bcd\u0b9f\u0bb5\u0ba3\u0bc8")) return "timetable";
+      if (value.includes("assignment") || value.includes("reminder") || value.includes("submission") || value.includes("alert") || value.includes("due date") || value.includes("\u0b92\u0baa\u0bcd\u0baa\u0b9f\u0bc8\u0baa\u0bcd\u0baa\u0bc1") || value.includes("\u0ba8\u0bbf\u0ba9\u0bc8\u0bb5\u0bc2\u0b9f\u0bcd\u0b9f\u0bb2\u0bcd")) return "reminders";
+      if (value.includes("hostel") || value.includes("room") || value.includes("stay") || value.includes("accommodation") || value.includes("viduthi") || value.includes("\u0bb5\u0bbf\u0b9f\u0bc1\u0ba4\u0bbf")) return "hostel";
+      if (value.includes("scholarship") || value.includes("scholar") || value.includes("financial aid") || value.includes("first graduate") || value.includes("udhavithogai") || value.includes("\u0b89\u0ba4\u0bb5\u0bbf\u0ba4\u0bcd\u0ba4\u0bca\u0b95\u0bc8")) return "scholarship";
+      if (value.includes("transport") || value.includes("bus") || value.includes("route") || value.includes("pickup") || value.includes("drop") || value.includes("\u0baa\u0bcb\u0b95\u0bcd\u0b95\u0bc1\u0bb5\u0bb0\u0ba4\u0bcd\u0ba4\u0bc1")) return "transport";
+      if (value.includes("office time") || value.includes("office timing") || value.includes("office hour") || value.includes("working hour") || value.includes("office open") || value.includes("aluvagam") || value.includes("\u0b85\u0bb2\u0bc1\u0bb5\u0bb2\u0b95\u0bae\u0bcd")) return "office";
+      if (value.includes("placement") || value.includes("job") || value.includes("career") || value.includes("campus interview") || value.includes("recruitment")) return "placement";
+      if (value.includes("contact") || value.includes("phone") || value.includes("number") || value.includes("call") || value.includes("help desk") || value.includes("enquiry") || value.includes("\u0ba4\u0bca\u0b9f\u0bb0\u0bcd\u0baa\u0bc1")) return "contact";
+      return "default";
+    }
+    function detectCourse(message) {
+      const value = message.toLowerCase();
+      const extraAliases = {
+        bsc_cs: ["bsc cs", "cs department", "computer science department", "5th sem cs", "cs 5th sem"],
+        bsc_chemistry: ["bsc chem", "chem department"],
+        bsc_mathematics: ["bsc maths", "bsc maths", "maths department", "math department"],
+        bsc_physics: ["bsc phy", "physics department"],
+        ba_tamil: ["ba tamil department", "tamil ba"],
+        ba_english: ["ba english department", "english ba"],
+        bca: ["bca department"],
+        bcom: ["bcom department", "b com"],
+        bba: ["bba department", "b ba"],
+        ma_tamil: ["ma tamil", "m a tamil"],
+        ma_english: ["ma english", "m a english"],
+        msc_cs: ["msc cs", "m.sc cs"],
+        msc_chemistry: ["msc chem", "m.sc chem"],
+        msc_mathematics: ["msc maths", "m.sc maths"],
+        msc_physics: ["msc phy", "m.sc phy"],
+        mca: ["mca department"],
+        mcom: ["m com", "mcom department"],
+        mba: ["m ba", "mba department"]
+      };
+      for (const [courseKey, aliases] of Object.entries(courseAliases)) {
+        if (aliases.some((alias) => value.includes(alias.toLowerCase()))) return courseKey;
+      }
+      for (const [courseKey, aliases] of Object.entries(extraAliases)) {
+        if (aliases.some((alias) => value.includes(alias))) return courseKey;
+      }
+      return null;
+    }
+    function category(message) {
+      const value = message.toLowerCase();
+      const courseKey = detectCourse(message);
+      const semesterHint = /\b([1-6])(st|nd|rd|th)?\s*sem\b|\bsem\s*([1-6])\b|\bsemester\b/.test(value);
+      const timetableHint = value.includes("timetable") || value.includes("time table") || value.includes("schedule") || value.includes("class time") || value.includes("routine") || value.includes("attavanai") || value.includes("\u0b95\u0bbe\u0bb2\u0b85\u0b9f\u0bcd\u0b9f\u0bb5\u0ba3\u0bc8") || value.includes("\u0b85\u0b9f\u0bcd\u0b9f\u0bb5\u0ba3\u0bc8");
+      if (courseKey && (semesterHint || timetableHint)) return "timetable";
+      if (value.includes("course") || value.includes("program") || value.includes("department") || value.includes("padippu") || value.includes("degree") || value.includes("ug") || value.includes("pg") || value.includes("\u0baa\u0bbe\u0b9f") || value.includes("\u0baa\u0b9f\u0bbf\u0baa\u0bcd\u0baa\u0bc1")) return "courses";
+      if (value.includes("admission") || value.includes("apply") || value.includes("application") || value.includes("eligibility") || value.includes("document") || value.includes("join") || value.includes("serkkai") || value.includes("admission open") || value.includes("\u0b9a\u0bc7\u0bb0\u0bcd\u0b95\u0bcd\u0b95\u0bc8")) return "admission";
+      if (value.includes("exam") || value.includes("hall ticket") || value.includes("hallticket") || value.includes("hall") || value.includes("internal") || value.includes("thervu") || value.includes("\u0ba4\u0bc7\u0bb0\u0bcd\u0bb5\u0bc1") || value.includes("\u0bb9\u0bbe\u0bb2\u0bcd")) return "exams";
+      if (value.includes("fee") || value.includes("payment") || value.includes("installment") || value.includes("feesu") || value.includes("kattanam") || value.includes("balance") || value.includes("due") || value.includes("\u0b95\u0b9f\u0bcd\u0b9f\u0ba3\u0bae\u0bcd")) return "fees";
+      if (timetableHint || semesterHint) return "timetable";
+      if (value.includes("assignment") || value.includes("reminder") || value.includes("submission") || value.includes("alert") || value.includes("due date") || value.includes("\u0b92\u0baa\u0bcd\u0baa\u0b9f\u0bc8\u0baa\u0bcd\u0baa\u0bc1") || value.includes("\u0ba8\u0bbf\u0ba9\u0bc8\u0bb5\u0bc2\u0b9f\u0bcd\u0b9f\u0bb2\u0bcd")) return "reminders";
+      if (value.includes("hostel") || value.includes("room") || value.includes("stay") || value.includes("accommodation") || value.includes("viduthi") || value.includes("\u0bb5\u0bbf\u0b9f\u0bc1\u0ba4\u0bbf")) return "hostel";
+      if (value.includes("scholarship") || value.includes("scholar") || value.includes("financial aid") || value.includes("first graduate") || value.includes("udhavithogai") || value.includes("\u0b89\u0ba4\u0bb5\u0bbf\u0ba4\u0bcd\u0ba4\u0bca\u0b95\u0bc8")) return "scholarship";
+      if (value.includes("transport") || value.includes("bus") || value.includes("route") || value.includes("pickup") || value.includes("drop") || value.includes("\u0baa\u0bcb\u0b95\u0bcd\u0b95\u0bc1\u0bb5\u0bb0\u0ba4\u0bcd\u0ba4\u0bc1")) return "transport";
+      if (value.includes("office time") || value.includes("office timing") || value.includes("office hour") || value.includes("working hour") || value.includes("office open") || value.includes("aluvagam") || value.includes("\u0b85\u0bb2\u0bc1\u0bb5\u0bb2\u0b95\u0bae\u0bcd")) return "office";
+      if (value.includes("placement") || value.includes("job") || value.includes("career") || value.includes("campus interview") || value.includes("recruitment")) return "placement";
+      if (value.includes("contact") || value.includes("phone") || value.includes("number") || value.includes("call") || value.includes("help desk") || value.includes("enquiry") || value.includes("\u0ba4\u0bca\u0b9f\u0bb0\u0bcd\u0baa\u0bc1")) return "contact";
+      if (courseKey) return "timetable";
+      return "default";
+    }
+    function botReply(message) {
+      const lang = replyLanguage(message);
+      const topic = category(message);
+      const courseKey = detectCourse(message);
+      if (topic === "courses") return copy[lang].replyCourses;
+      if (topic === "admission") return copy[lang].replyAdmission;
+      if (topic === "exams") return copy[lang].replyExams;
+      if (topic === "fees") return copy[lang].replyFees;
+      if (topic === "timetable" && courseKey) return lang === "tg" ? courseTimetablesTanglish[courseKey] : courseTimetables[lang][courseKey];
+      if (topic === "timetable") return copy[lang].replyTimetable;
+      if (topic === "reminders") return copy[lang].replyReminders;
+      if (topic === "hostel") return copy[lang].replyHostel;
+      if (topic === "scholarship") return copy[lang].replyScholarship;
+      if (topic === "transport") return copy[lang].replyTransport;
+      if (topic === "office") return copy[lang].replyOffice;
+      if (topic === "placement") return copy[lang].replyPlacement;
+      if (topic === "contact") return copy[lang].replyContact;
+      return copy[lang].replyDefault;
+    }
+    async function submitMessage(message) {
+      const clean = message.trim();
+      if (!clean) return;
+      openChat();
+      addBubble(clean, "user");
+      chatHistory.push({ role: "user", text: clean });
+      chatInput.value = "";
+      
+      showTypingIndicator();
+      
+      const localApiKey = localStorage.getItem("unimitra_openai_key");
+      if (localApiKey) {
+        try {
+          const messages = [
+            { role: "system", content: systemPrompt }
+          ];
+          chatHistory.slice(-10).forEach(msg => {
+            if (msg.role === "user" || msg.role === "assistant" || msg.role === "bot") {
+              const role = msg.role === "bot" ? "assistant" : msg.role;
+              messages.push({ role, content: msg.text || msg.content });
+            }
+          });
+          
+          const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localApiKey}`
+            },
+            body: JSON.stringify({
+              model: "gpt-4o-mini",
+              messages: messages,
+              temperature: 0.7,
+              max_tokens: 450
+            })
+          });
+          
+          hideTypingIndicator();
+          if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData?.error?.message || "Direct API call failed");
+          }
+          
+          const data = await response.json();
+          const replyText = data.choices?.[0]?.message?.content || "";
+          if (!replyText) throw new Error("Empty response");
+          
+          addBubble(replyText, "bot");
+          chatHistory.push({ role: "bot", text: replyText });
+        } catch (err) {
+          hideTypingIndicator();
+          console.warn("Direct OpenAI call failed, falling back to server:", err);
+          await submitMessageToServer(clean);
+        }
+      } else {
+        await submitMessageToServer(clean);
+      }
+    }
+
+    async function submitMessageToServer(clean) {
+      if (location.protocol === "file:") {
+        setTimeout(() => {
+          const reply = botReply(clean);
+          const suffix = currentLanguage === "ta" ? " (ஆஃப்லைன் பயன்முறை)" : " (Offline Mode)";
+          addBubble(reply + suffix, "bot");
+          chatHistory.push({ role: "bot", text: reply });
+        }, 300);
+        return;
+      }
+      
+      showTypingIndicator();
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: clean,
+            history: chatHistory.slice(-10)
+          })
+        });
+        hideTypingIndicator();
+        if (!response.ok) throw new Error("API failed");
+        
+        const data = await response.json();
+        const replyText = data.response || data.text || "";
+        if (!replyText) throw new Error("Empty reply");
+        
+        addBubble(replyText, "bot");
+        chatHistory.push({ role: "bot", text: replyText });
+      } catch (err) {
+        hideTypingIndicator();
+        console.warn("API fallback to local patterns:", err);
+        setTimeout(() => {
+          const reply = botReply(clean);
+          const suffix = currentLanguage === "ta" ? " (ஆஃப்லைன் பயன்முறை)" : " (Offline Mode)";
+          addBubble(reply + suffix, "bot");
+          chatHistory.push({ role: "bot", text: reply });
+        }, 150);
+      }
+    }
+
+    document.getElementById("heroPrimary").addEventListener("click", openChat);
+    document.getElementById("chatClose").addEventListener("click", closeChat);
+    document.getElementById("chatForm").addEventListener("submit", (event) => { event.preventDefault(); submitMessage(chatInput.value); });
+    chatFeed.addEventListener("click", (event) => {
+      const chip = event.target.closest(".suggestion-chip");
+      if (chip) {
+        submitMessage(chip.dataset.question || chip.textContent || "");
+        return;
+      }
+      const reaction = event.target.closest(".reaction-btn");
+      if (!reaction) return;
+      const reactionGroup = reaction.closest(".bubble-reactions");
+      if (!reactionGroup) return;
+      reactionGroup.querySelectorAll(".reaction-btn").forEach((button) => {
+        button.classList.toggle("active", button === reaction);
+      });
+    });
+    voiceFab.addEventListener("click", openChat);
+    langEnglish.addEventListener("click", () => applyLanguage("en"));
+    langTamil.addEventListener("click", () => applyLanguage("ta"));
+
+    // Key settings panel logic
+    openaiApiKeyInput.value = localStorage.getItem("unimitra_openai_key") || "";
+    chatSettingsToggle.addEventListener("click", () => {
+      chatSettingsPanel.style.display = chatSettingsPanel.style.display === "none" ? "block" : "none";
+    });
+    saveApiKeyBtn.addEventListener("click", () => {
+      const keyVal = openaiApiKeyInput.value.trim();
+      if (keyVal) {
+        localStorage.setItem("unimitra_openai_key", keyVal);
+      } else {
+        localStorage.removeItem("unimitra_openai_key");
+      }
+      settingsKeyStatus.style.display = "block";
+      setTimeout(() => {
+        settingsKeyStatus.style.display = "none";
+        chatSettingsPanel.style.display = "none";
+      }, 1500);
+    });
+
+    initVoiceInput();
+    applyLanguage("en");
+  </script>
+</body>
+</html>
