@@ -1,0 +1,60 @@
+{
+  "projectName": "UniMitra AI",
+  "projectType": "AI-Powered Chatbot for University Student Support",
+  "languages": ["English", "Tamil", "Tanglish"],
+  "ugCourses": [
+    "B.A Tamil",
+    "B.A English",
+    "B.Sc Computer Science",
+    "B.Sc Chemistry",
+    "B.Sc Mathematics",
+    "B.Sc Physics",
+    "B.C.A",
+    "B.Com",
+    "B.B.A"
+  ],
+  "pgCourses": [
+    "M.A Tamil",
+    "M.A English",
+    "M.Sc Computer Science",
+    "M.Sc Chemistry",
+    "M.Sc Mathematics",
+    "M.Sc Physics",
+    "M.C.A",
+    "M.Com",
+    "M.B.A"
+  ],
+  "admissions": {
+    "status": "Open for 2026 batch",
+    "officeHours": "9:30 AM to 4:30 PM",
+    "documents": [
+      "10th Mark Sheet",
+      "12th Mark Sheet",
+      "Transfer Certificate",
+      "Aadhaar Copy",
+      "Community Certificate (if applicable)",
+      "Passport-size Photos"
+    ]
+  },
+  "exams": {
+    "registrationDeadline": "June 25, 2026",
+    "hallTicketRelease": "About one week before the first exam",
+    "note": "Final hall ticket generation requires fee clearance"
+  },
+  "fees": {
+    "ugArtsCommerce": "Rs. 18,000 per semester onwards",
+    "ugScienceComputer": "Rs. 24,000 per semester onwards",
+    "pgPrograms": "Rs. 28,000 per semester onwards"
+  },
+  "support": {
+    "hostelFee": "Rs. 35,000 per year onwards",
+    "transportRoutes": ["Chennai", "ECR", "Mamallapuram", "Kalpakkam"],
+    "placementDays": ["Wednesday Afternoon", "Friday Afternoon"]
+  },
+  "contacts": {
+    "admissionDesk": "044-4000 2100",
+    "examCell": "044-4000 2125",
+    "accountsOffice": "044-4000 2130",
+    "studentWelfareDesk": "044-4000 2145"
+  }
+}
